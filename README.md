@@ -1,0 +1,1 @@
+# playnite-amazon-clientless-plugin
