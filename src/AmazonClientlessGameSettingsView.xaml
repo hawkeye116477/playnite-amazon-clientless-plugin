@@ -44,7 +44,7 @@
                       Content="{common:Localize Key={x:Static system:LOC.CommonDisableGameUpdateChecking}}"
                       Margin="0,0,0,8" x:Name="DisableGameUpdateCheckingChk"
                       IsChecked="{Binding ChosenGameSettings.DisableGameVersionCheck}" />
-           
+
             <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonStartupArguments}}"
                        Grid.Column="0"
                        Grid.Row="1" Margin="0,0,8,8" VerticalAlignment="Center" HorizontalAlignment="Left" />

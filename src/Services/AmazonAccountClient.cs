@@ -21,6 +21,7 @@ public class AmazonAccountClient(IPlayniteApi api)
 
     private const string LoginUserAgent =
         "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) @amzn/aga-electron-platform/1.0.0 Chrome/78.0.3904.130 Electron/7.1.9 Safari/537.36";
+
     private const string LauncherUserAgent =
         "com.amazon.agslauncher.win/3.0.9782.3";
 
@@ -152,7 +153,7 @@ public class AmazonAccountClient(IPlayniteApi api)
         }
         catch (Exception ex)
         {
-            logger.Error(ex, $"Failed to authenticate with Amazon");
+            logger.Error(ex, "Failed to authenticate with Amazon");
         }
     }
 
@@ -202,7 +203,7 @@ public class AmazonAccountClient(IPlayniteApi api)
             }
             catch (Exception ex)
             {
-                logger.Error(ex, $"Failed to get account entitlements");
+                logger.Error(ex, "Failed to get account entitlements");
             }
         } while (!nextToken.IsNullOrEmpty());
 
@@ -277,13 +278,14 @@ public class AmazonAccountClient(IPlayniteApi api)
                         strcont);
                     var authResponseContent = await authResponse.Content.ReadAsStringAsync();
                     logger.Debug(authResponseContent);
-                    var authData = Serialization.FromJson<DeviceRegistrationResponse.ResponseWrapper.SuccessWrapper.Bearer>(authResponseContent);
+                    var authData =
+                        Serialization.FromJson<DeviceRegistrationResponse.ResponseWrapper.SuccessWrapper.Bearer>(authResponseContent);
                     if (authData != null)
                     {
                         tokens.Tokens.Bearer.Access_token = authData.Access_token;
                         tokens.Tokens.Bearer.Token_obtain_time = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                     }
-                    
+
                     var jsonTokens = Serialization.ToJson(tokens);
                     Encryption.EncryptToFile(AmazonClientlessLauncher.EncryptedTokensPath,
                         jsonTokens,
@@ -296,6 +298,7 @@ public class AmazonAccountClient(IPlayniteApi api)
                 }
             }
         }
+
         return tokens;
     }
 

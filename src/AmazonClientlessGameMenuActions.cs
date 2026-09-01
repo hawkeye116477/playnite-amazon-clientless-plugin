@@ -9,7 +9,7 @@ public class AmazonClientlessGameMenuActions(IReadOnlyList<Game> games)
     private IPlayniteApi PlayniteApi { get; set; } = AmazonClientlessPlugin.PlayniteApi;
     private Game Game { get; set; } = games.First();
     private IReadOnlyList<Game> Games { get; set; } = games;
-    
+
     public async Task OpenCheckForGamesUpdatesWindow()
     {
     }

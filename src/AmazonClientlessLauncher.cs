@@ -13,6 +13,7 @@ public class AmazonClientlessLauncher
 {
     public static string EncryptedTokensPath =>
         Path.Combine(Path.Combine(AmazonClientlessPlugin.PlayniteApi.UserDataDir, "tokens_encrypted.json"));
+
     private static readonly SpecImportableProperty PcSpecProperty = new("pc_windows");
 
     internal static void ClearCache()
@@ -109,7 +110,7 @@ public class AmazonClientlessLauncher
             installLocation = Paths.FixSeparators(installLocation);
             app.Path = installLocation;
             var gameName = new DirectoryInfo(installLocation).Name;
-            var nileLibSyncJsonPath = Path.Combine(AmazonClientlessLauncher.NileConfigPath, "library.json");
+            var nileLibSyncJsonPath = Path.Combine(NileConfigPath, "library.json");
             if (File.Exists(nileLibSyncJsonPath))
             {
                 var nileLibSyncJson = new List<NileLibraryFile.NileGames>();
@@ -134,7 +135,7 @@ public class AmazonClientlessLauncher
 
         return list;
     }
-    
+
     public string NormalizeGameTitle(string gameTitle)
     {
         var newGameName = gameTitle.RemoveMarks().Replace("•", " ");
@@ -154,7 +155,7 @@ public class AmazonClientlessLauncher
     {
         var games = new Dictionary<string, InstalledGamesWrapper.Installed>();
         var nileAppList = GetNileInstalledAppList();
-        
+
         foreach (InstalledGamesWrapper.Installed installedGame in nileAppList)
         {
             installedGame.Name = NormalizeGameTitle(installedGame.Name);
@@ -211,7 +212,7 @@ public class AmazonClientlessLauncher
     {
         var installedGames = GetInstalledGames();
         var importableGames = new Dictionary<string, ImportableGame>();
-        foreach (var installedGame in installedGames )
+        foreach (var installedGame in installedGames)
         {
             var game = new ImportableGame(installedGame.Value.Name, AmazonClientlessPlugin.Id, installedGame.Value.ID)
             {
@@ -225,20 +226,21 @@ public class AmazonClientlessLauncher
 
         return importableGames;
     }
-    
-    
+
+
     public async Task<List<ImportableGame>> GetLibraryGames()
     {
         var games = new List<ImportableGame>();
         var client = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
         var entitlements = await client.GetAccountEntitlements();
-        
+
         foreach (var item in entitlements)
         {
             if (item.Product.ProductLine == "Twitch:FuelEntitlement")
             {
                 continue;
             }
+
             var gameName = NormalizeGameTitle(item.Product.Title);
             var game = new ImportableGame(gameName, AmazonClientlessPlugin.Id, item.Product.ID)
             {
@@ -251,7 +253,7 @@ public class AmazonClientlessLauncher
 
         return games;
     }
-    
+
     public static GameConfiguration? GetGameConfiguration(string gameDir)
     {
         var configFile = Path.Combine(gameDir, GameConfiguration.ConfigFileName);
@@ -262,10 +264,11 @@ public class AmazonClientlessLauncher
             {
                 return Serialization.FromJson<GameConfiguration>(content);
             }
-            
         }
+
         return null;
     }
+
     public static async Task CompleteGameInstallation(string gameId, string installDirectory)
     {
         var gameSettings = AmazonClientlessGameSettingsViewModel.LoadGameSettings(gameId);
@@ -289,11 +292,12 @@ public class AmazonClientlessLauncher
                 }
             }
         }
+
         gameSettings.IsFullyInstalled = true;
         var commonHelpers = AmazonClientlessPlugin.Instance.CommonHelpers;
         commonHelpers.SaveJsonSettingsToFile(gameSettings, "GamesSettings", gameId, true);
     }
-    
+
     public static bool GetGameRequiresClient(GameConfiguration config)
     {
         return config.Main != null &&

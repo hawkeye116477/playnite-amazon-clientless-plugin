@@ -84,7 +84,7 @@ public class DeviceRegistrationResponse
 
             public TokensWrapper Tokens { get; set; } = new();
             public ExtensionsWrapper Extensions { get; set; } = new();
-            
+
             public string? Customer_id { get; set; }
         }
 

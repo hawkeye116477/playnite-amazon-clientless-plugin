@@ -8,7 +8,8 @@ public class AmazonClientlessMetadataProviderProviderGameSession(Game game) : Me
     {
         return dataArgs.DataId switch
         {
-            BuiltInGameDataId.Links => new List<ImportableWebLink> { new("pcgamingwiki", "PCGamingWiki", $"http://pcgamingwiki.com/w/index.php?search={Uri.EscapeDataString(Game.Name)}") },
+            BuiltInGameDataId.Links => new List<ImportableWebLink>
+                { new("pcgamingwiki", "PCGamingWiki", $"http://pcgamingwiki.com/w/index.php?search={Uri.EscapeDataString(Game.Name)}") },
             _ => null
         };
     }
@@ -18,7 +19,8 @@ public class AmazonClientlessMetadataProvider : MetadataProvider
 {
     public override async Task<MetadataProviderGameSession?> CreateGameSessionAsync(CreateGameMetadataSessionArgs args)
     {
-        return args.Game.LibraryId != AmazonClientlessPlugin.Id ? null :
+        return args.Game.LibraryId != AmazonClientlessPlugin.Id ?
+            null :
             new AmazonClientlessMetadataProviderProviderGameSession(args.Game);
     }
 }

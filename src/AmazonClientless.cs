@@ -122,10 +122,11 @@ public class AmazonClientlessPlugin : Plugin
                     menuItems.Add(new MenuItemImpl(
                         LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstallGame),
                         // TODO: Add uninstall action
-                        async _ => {  },
+                        async _ => { },
                         icon: CommonIcons.UninstallIcon
                     ));
                 }
+
                 menuItems.Add(new MenuItemImpl(
                     LocalizationManager.Instance.GetString(LOC.CommonRepair),
                     _ =>

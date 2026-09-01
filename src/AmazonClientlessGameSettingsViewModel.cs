@@ -17,7 +17,7 @@ public partial class AmazonClientlessGameSettingsViewModel : ObservableObject
 
     [ObservableProperty]
     public partial string StartupArgumentsTxt { get; set; }
-    
+
     public AmazonClientlessGameSettingsViewModel(Game game)
     {
         Game = game;
@@ -32,7 +32,7 @@ public partial class AmazonClientlessGameSettingsViewModel : ObservableObject
             StartupArgumentsTxt = "";
         }
     }
-    
+
     public static GameSettings LoadGameSettings(string gameId, bool init = false)
     {
         var playniteApi = AmazonClientlessPlugin.PlayniteApi;
@@ -75,6 +75,7 @@ public partial class AmazonClientlessGameSettingsViewModel : ObservableObject
         {
             newGameSettings.StartupArguments = CommonHelpers.SplitArguments(StartupArgumentsTxt).ToList();
         }
+
         newGameSettings.IsFullyInstalled = ChosenGameSettings.IsFullyInstalled;
         return newGameSettings;
     }

@@ -12,34 +12,34 @@ public partial class AmazonClientlessPluginSettings : ObservableObject
 {
     [ObservableProperty]
     public partial bool ImportInstalledGames { get; set; } = true;
-    
+
     [ObservableProperty]
     public partial bool ConnectAccount { get; set; } = false;
-    
+
     [ObservableProperty]
     public partial bool ImportUninstalledGames { get; set; } = false;
-    
+
     [ObservableProperty]
     public partial string GamesInstallationPath { get; set; } = "";
-    
+
     [ObservableProperty]
     public partial int MaxWorkers { get; set; } = 0;
-    
+
     [ObservableProperty]
     public partial bool UnattendedInstall { get; set; } = false;
-    
+
     [ObservableProperty]
     public partial ClearCacheTime AutoClearCache { get; set; } = ClearCacheTime.Never;
-    
+
     [ObservableProperty]
     public partial UpdatePolicy GamesUpdatePolicy { get; set; } = UpdatePolicy.Month;
-    
+
     [ObservableProperty]
     public partial long NextClearingTime { get; set; } = 0;
-    
+
     [ObservableProperty]
     public partial long NextGamesUpdateTime { get; set; } = 0;
-    
+
     [ObservableProperty]
     public partial bool AutoUpdateGames { get; set; } = false;
 }
@@ -67,7 +67,7 @@ public partial class AmazonClientlessSettingsHandler(AmazonClientlessPlugin plug
 
         return settings ?? new AmazonClientlessPluginSettings();
     }
-    
+
     public override FrameworkElement GetEditView(GetSettingsViewArgs args)
     {
         return new AmazonClientlessSettingsView { DataContext = this };
@@ -108,7 +108,7 @@ public partial class AmazonClientlessSettingsHandler(AmazonClientlessPlugin plug
                 Settings.NextGamesUpdateTime = 0;
             }
         }
-        
+
         plugin.Settings = Settings;
         plugin.SavePluginSettings(Settings);
     }

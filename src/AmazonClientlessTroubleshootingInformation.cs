@@ -13,6 +13,6 @@ public static class AmazonClientlessTroubleshootingInformation
             return fvi.ProductVersion;
         }
     }
-    
+
     public static string GamesInstallationPath => AmazonClientlessLauncher.GamesInstallationPath;
 }

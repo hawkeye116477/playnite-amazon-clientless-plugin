@@ -9,7 +9,7 @@ public partial class GameSettings : ObservableObject
 
     [ObservableProperty]
     public partial List<string>? StartupArguments { get; set; }
-    
+
     [ObservableProperty]
     public partial bool IsFullyInstalled { get; set; } = false;
 }

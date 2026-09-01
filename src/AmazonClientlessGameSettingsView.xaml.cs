@@ -10,6 +10,7 @@ public partial class AmazonClientlessGameSettingsView : UserControl
     private AmazonClientlessGameSettingsViewModel Vm => (DataContext as AmazonClientlessGameSettingsViewModel)!;
     private CommonHelpers commonHelpers = AmazonClientlessPlugin.Instance.CommonHelpers;
     private Game Game => Vm.Game;
+
     public AmazonClientlessGameSettingsView()
     {
         InitializeComponent();

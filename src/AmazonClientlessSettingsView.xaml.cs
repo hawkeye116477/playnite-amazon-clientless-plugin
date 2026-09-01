@@ -16,7 +16,7 @@ namespace AmazonClientless
     public partial class AmazonClientlessSettingsView : UserControl
     {
         private readonly ILogger logger = LogManager.GetLogger();
-        
+
         public AmazonClientlessSettingsView()
         {
             InitializeComponent();
@@ -32,7 +32,8 @@ namespace AmazonClientless
                 var userLoggedIn = await clientApi.GetIsUserLoggedIn();
                 if (userLoggedIn)
                 {
-                    AuthStatusTB.Text = LocalizationManager.Instance.GetString(LOC.CommonSignedInAs, new Dictionary<string, IFluentType> { ["userName"] = (FluentString)clientApi.GetUsername() });
+                    AuthStatusTB.Text = LocalizationManager.Instance.GetString(LOC.CommonSignedInAs,
+                        new Dictionary<string, IFluentType> { ["userName"] = (FluentString)clientApi.GetUsername() });
                     LoginBtn.Content = LocalizationManager.Instance.GetString(LOC.CommonSignOut);
                     LoginBtn.IsChecked = true;
                 }
@@ -42,6 +43,7 @@ namespace AmazonClientless
                     LoginBtn.Content = LocalizationManager.Instance.GetString(LOC.ThirdPartyAmazonAuthenticateLabel);
                     LoginBtn.IsChecked = false;
                 }
+
                 LoginBtn.IsEnabled = true;
             }
             else
@@ -50,7 +52,7 @@ namespace AmazonClientless
                 LoginBtn.IsEnabled = true;
             }
         }
-        
+
         private async void AmazonConnectAccountChk_Checked(object sender, RoutedEventArgs e)
         {
             await UpdateAuthStatus();
@@ -68,14 +70,18 @@ namespace AmazonClientless
                 }
                 catch (Exception ex)
                 {
-                    await AmazonClientlessPlugin.PlayniteApi.Dialogs.ShowErrorMessageAsync(LocalizationManager.Instance.GetString(LOC.ThirdPartyAmazonNotLoggedInError), "");
+                    await AmazonClientlessPlugin.PlayniteApi.Dialogs.ShowErrorMessageAsync(
+                        LocalizationManager.Instance.GetString(LOC.ThirdPartyAmazonNotLoggedInError), "");
                     logger.Error(ex, "Failed to authenticate user.");
                 }
+
                 await UpdateAuthStatus(true);
             }
             else
             {
-                var answer = await AmazonClientlessPlugin.PlayniteApi.Dialogs.ShowMessageAsync(LocalizationManager.Instance.GetString(LOC.CommonSignOutConfirm), LocalizationManager.Instance.GetString(LOC.CommonSignOut), MessageBoxButtons.YesNo);
+                var answer = await AmazonClientlessPlugin.PlayniteApi.Dialogs.ShowMessageAsync(
+                    LocalizationManager.Instance.GetString(LOC.CommonSignOutConfirm),
+                    LocalizationManager.Instance.GetString(LOC.CommonSignOut), MessageBoxButtons.YesNo);
                 if (answer == Playnite.MessageBoxResult.Yes)
                 {
                     await clientApi.LogOut();
@@ -85,7 +91,7 @@ namespace AmazonClientless
                 {
                     LoginBtn.IsChecked = true;
                 }
-            } 
+            }
         }
 
         private void GamesUpdatesCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -109,7 +115,7 @@ namespace AmazonClientless
                 SelectedGamePathTxt.Text = result[0];
             }
         }
-        
+
 
         private async void ClearCacheBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -122,7 +128,7 @@ namespace AmazonClientless
                 AmazonClientlessLauncher.ClearCache();
             }
         }
-        
+
         private async void OpenGamesInstallationPathBtn_Click(object sender, RoutedEventArgs e)
         {
             if (Directory.Exists(AmazonClientlessTroubleshootingInformation.GamesInstallationPath))
@@ -131,7 +137,8 @@ namespace AmazonClientless
             }
             else
             {
-                await AmazonClientlessPlugin.PlayniteApi.Dialogs.ShowErrorMessageAsync(LocalizationManager.Instance.GetString(LOC.CommonPathNotExistsError));
+                await AmazonClientlessPlugin.PlayniteApi.Dialogs.ShowErrorMessageAsync(
+                    LocalizationManager.Instance.GetString(LOC.CommonPathNotExistsError));
             }
         }
 
@@ -169,7 +176,7 @@ namespace AmazonClientless
                 { UpdatePolicy.Never, LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteOptionOnlyManually) }
             };
             GamesUpdatesCBo.ItemsSource = updatePolicyOptions;
-            
+
             var autoClearOptions = new Dictionary<ClearCacheTime, string>
             {
                 { ClearCacheTime.Day, LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteOptionOnceADay) },
@@ -183,12 +190,13 @@ namespace AmazonClientless
                 }
             };
             AutoClearCacheCBo.ItemsSource = autoClearOptions;
-            
+
             PlayniteVersionTxt.Text = AmazonClientlessTroubleshootingInformation.PlayniteVersion;
             PluginVersionTxt.Text = AmazonClientlessTroubleshootingInformation.PluginVersion ?? "";
             GamesInstallationPathTxt.Text = AmazonClientlessTroubleshootingInformation.GamesInstallationPath;
             LogFilesPathTxt.Text = AmazonClientlessPlugin.PlayniteApi.AppInfo.ConfigurationDirectory;
-            ReportBugHyp.NavigateUri = new Uri($"https://github.com/hawkeye116477/playnite-amazon-clientless-plugin/issues/new?assignees=&labels=bug&projects=&template=bugs.yml&pluginV={AmazonClientlessTroubleshootingInformation.PluginVersion}&playniteV={AmazonClientlessTroubleshootingInformation.PlayniteVersion}");
+            ReportBugHyp.NavigateUri = new Uri(
+                $"https://github.com/hawkeye116477/playnite-amazon-clientless-plugin/issues/new?assignees=&labels=bug&projects=&template=bugs.yml&pluginV={AmazonClientlessTroubleshootingInformation.PluginVersion}&playniteV={AmazonClientlessTroubleshootingInformation.PlayniteVersion}");
         }
     }
 }
