@@ -1,0 +1,60 @@
+###
+### Automatically generated via update_3p_localization.py script using files from 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
+###
+third-party-playnite-game-start-error = No es pot iniciar el joc: { $var0 }
+third-party-playnite-game-install-error = No es pot instal·lar el joc: { $var0 }
+third-party-playnite-game-uninstall-error = No es pot desinstal·lar el joc: { $var0 }
+third-party-playnite-version-label = Versió
+third-party-playnite-ok-label = D'acord
+third-party-playnite-save-label = Desar
+third-party-playnite-cancel-label = Cancel·lar
+third-party-playnite-yes-label = Sí
+third-party-playnite-no-label = No
+third-party-playnite-downloading-label = Descarregant…
+third-party-playnite-loading-label = Carregant...
+third-party-playnite-settings-label = Configuració
+third-party-playnite-settings-general-label = General
+third-party-playnite-settings-advanced-label = Avançat
+third-party-playnite-settings-clear-cache-title = Esborrar memòria cau?
+third-party-playnite-settings-playtime-import-mode-never = Mai
+third-party-playnite-login-required = Es requereix autenticació
+third-party-playnite-executable-title = Executable
+third-party-playnite-game-install-dir-title = Carpeta d'instal·lació
+third-party-playnite-library-import-error = No s’han pogut importar els jocs de { $var0 }.
+third-party-playnite-metadata-download-error = No s'ha pogut descarregar les metadades: { $var0 }
+third-party-playnite-uninstalling = Desinstal·lant
+third-party-playnite-game-launching = Iniciant
+third-party-playnite-do-nothing = No fer res
+third-party-playnite-updater-window-title = Actualització disponible
+third-party-playnite-updater-install-update = Descarregar i instal·lar l'actualització
+third-party-playnite-check-for-updates = Buscar actualitzacions
+third-party-playnite-update-check-fail-message = No s'ha pogut comprovar si hi ha una versió nova.
+third-party-playnite-install-game = Instal·lar
+third-party-playnite-uninstall-game = Desinstal·lar
+third-party-playnite-dont-show-again-title = No mostrar de nou
+third-party-playnite-extensions-updates = Actualitzacions
+third-party-playnite-select-file-tooltip = Seleccionar fitxer...
+third-party-playnite-select-directory-tooltip = Seleccionar carpeta...
+third-party-playnite-option-only-manually = Només manualment
+third-party-playnite-option-once-a-day = Un cop al dia
+third-party-playnite-option-once-a-week = Un cop per setmana
+third-party-playnite-open = Obrir
+third-party-amazon-settings-import-installed-label = Importar jocs instal·lats
+third-party-amazon-settings-import-uninstalled-label = Importar jocs no instal·lats
+third-party-amazon-settings-connect-account = Connectar compte
+third-party-amazon-login-checking = Comprovant estat d'autenticació...
+third-party-amazon-logged-in = L'usuari està autenticat
+third-party-amazon-not-logged-in = Requereix autenticació
+third-party-amazon-not-logged-in-error = No s’ha pogut autenticar l’usuari.
+third-party-amazon-authenticate-label = Autenticar
+third-party-amazon-settings-start-game-directly = Iniciar jocs directament sense executar el client oficial
+third-party-amazon-trouble-shooting-account-link = Resolució de problemes de sincronització del compte
+third-party-amazon-trouble-shooting-issues = Resolució de problemes
+third-party-amazon-settings-import-library-label = Importar tots els jocs
+third-party-amazon-private-account = Compte privat
+third-party-amazon-public-account = Compte públic
+third-party-amazon-api-key = Clau API
+third-party-amazon-start-using-client = Iniciar a través del client { $var0 }

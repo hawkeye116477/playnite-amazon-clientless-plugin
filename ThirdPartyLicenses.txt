@@ -1,0 +1,50 @@
+MIT License
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+----------------------------------------------------------------------------------------
+Playnite / Playnite.SDK - https://github.com/JosefNemec/Playnite
+MIT License
+Copyright (c) 2020 Josef Nemec
+
+----------------------------------------------------------------------------------------
+Microsoft.Windows.CsWin32 - https://github.com/microsoft/CsWin32
+The MIT License (MIT)
+Copyright (c) Microsoft Corporation
+All rights reserved.
+
+----------------------------------------------------------------------------------------
+ByteSize - https://github.com/omar/ByteSize
+The MIT License (MIT)
+Copyright (c) 2013-2022 Omar Khudeira (http://omar.io)
+
+----------------------------------------------------------------------------------------
+Linguini - https://github.com/Ygg01/Linguini/
+License: MIT (dual-licensed MIT / Apache 2.0)
+Copyright 2021 Daniel Fath
+
+----------------------------------------------------------------------------------------
+CommunityToolkit.Mvvm - https://github.com/CommunityToolkit/dotnet
+MIT License (MIT)
+Copyright © .NET Foundation and Contributors
+All rights reserved.
+
+----------------------------------------------------------------------------------------
+SQLNadoAot - https://github.com/smourier/SQLNadoAot
+MIT License
+Copyright (c) 2026 Simon Mourier

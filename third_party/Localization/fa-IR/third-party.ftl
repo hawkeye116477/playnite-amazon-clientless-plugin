@@ -1,0 +1,60 @@
+###
+### Automatically generated via update_3p_localization.py script using files from 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
+###
+third-party-playnite-game-start-error = نمی‌توان بازی را آغاز کرد: { $var0 }
+third-party-playnite-game-install-error = نمی‌توان بازی را نصب کرد: { $var0 }
+third-party-playnite-game-uninstall-error = نمی‌توان بازی را زدود: { $var0 }
+third-party-playnite-version-label = نسخه
+third-party-playnite-ok-label = باشه
+third-party-playnite-save-label = ذخیره
+third-party-playnite-cancel-label = لغو
+third-party-playnite-yes-label = آره
+third-party-playnite-no-label = نه
+third-party-playnite-downloading-label = بارگيری...
+third-party-playnite-loading-label = بارکردن…
+third-party-playnite-settings-label = تنظیمات
+third-party-playnite-settings-general-label = عمومی
+third-party-playnite-settings-advanced-label = پیشرفته
+third-party-playnite-settings-clear-cache-title = حافظه پنهان پاک شود؟
+third-party-playnite-settings-playtime-import-mode-never = هرگز
+third-party-playnite-login-required = نیاز به تایید هویت دارد
+third-party-playnite-executable-title = اجراپذیر
+third-party-playnite-game-install-dir-title = پوشه‌ی نصب
+third-party-playnite-library-import-error = ناکامی در درون‌برد بازی‌ها از { $var0 }.
+third-party-playnite-metadata-download-error = ناکامی در بارگیری فراداده: { $var0 }
+third-party-playnite-uninstalling = در حال حذف نصب
+third-party-playnite-game-launching = در حال آغاز
+third-party-playnite-do-nothing = کاری نکن
+third-party-playnite-updater-window-title = به روزرسانی در دسترس است
+third-party-playnite-updater-install-update = بارگیری و نصب به‌روزرسانی
+third-party-playnite-check-for-updates = بررسی برای به‌روزرسانی
+third-party-playnite-update-check-fail-message = ناکامی در بررسی برای نسخه‌ی نو.
+third-party-playnite-install-game = نصب
+third-party-playnite-uninstall-game = حذف نصب
+third-party-playnite-dont-show-again-title = دوباره نمایش نده
+third-party-playnite-extensions-updates = به‌روزرسانی‌ها
+third-party-playnite-select-file-tooltip = گزینش پرونده…
+third-party-playnite-select-directory-tooltip = گزینش پوشه…
+third-party-playnite-option-only-manually = تنها دستی
+third-party-playnite-option-once-a-day = یک بار در روز
+third-party-playnite-option-once-a-week = یکبار در هفته
+third-party-playnite-open = باز کن
+third-party-amazon-settings-import-installed-label = درون‌برد بازی‌های نصب‌شده
+third-party-amazon-settings-import-uninstalled-label = درون‌برد بازی‌های نصب‌نشده
+third-party-amazon-settings-connect-account = اتصال حساب
+third-party-amazon-login-checking = بررسی وضیعت تایید…
+third-party-amazon-logged-in = کاربر تایید شد
+third-party-amazon-not-logged-in = نیاز به تأیید هویت
+third-party-amazon-not-logged-in-error = ناکامی در تایید کاربر.
+third-party-amazon-authenticate-label = احراز هویت
+third-party-amazon-settings-start-game-directly = بازی‌ها را یک‌راست و بدون اجرای کارخواه رسمی آغاز کنید
+third-party-amazon-trouble-shooting-account-link = عیب‌یابی مشکل‌های همگام‌سازی حساب
+third-party-amazon-trouble-shooting-issues = عیب‌یابی مشکل‌ها
+third-party-amazon-settings-import-library-label = درون‌برد همهٔ بازی‌ها
+third-party-amazon-private-account = حساب خصوصی
+third-party-amazon-public-account = حساب عمومی
+third-party-amazon-api-key = کلید اِی.پی.آی
+third-party-amazon-start-using-client = آغاز به‌کارگیری از کارخواه { $var0 }

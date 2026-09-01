@@ -1,0 +1,102 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionSuffix>$([System.DateTime]::UtcNow.ToString("yyyyMMdd"))</VersionSuffix>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <PathMap>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)/..'))=Dev:/playnite-amazon-clientless-plugin</PathMap>
+  </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="Localization\*\*.ftl">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="..\third_party\Localization\*\*.ftl">
+            <Link>Localization\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="..\third_party\CommonLocalization\*\*.ftl">
+            <Link>Localization\%(RecursiveDir)\%(Filename)%(Extension)</Link>
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+  <ItemGroup>
+    <None Update="extension.toml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\LICENSE.md">
+        <Link>LICENSE</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ThirdPartyLicenses.txt">
+            <Link>ThirdPartyLicenses.txt</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup Label="compileInclude3p">
+    <Compile Include="..\third_party\PlayniteExtensions\source\Generic\PlayniteExtensions.Common\GlobalCommands.cs" Link="Shared\Playnite\GlobalCommands.cs" />
+    <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\playnite\common\FileSystem.cs" Link="Shared\Playnite\FileSystem.cs" />
+    <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\playnite\common\Paths.cs" Link="Shared\Playnite\Paths.cs" />
+    <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\playnite\common\ProcessMonitor.cs" Link="Shared\Playnite\ProcessMonitor.cs" />
+    <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\playnite\common\ProcessStarter.cs" Link="Shared\Playnite\ProcessStarter.cs" />
+    <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\Playnite\Common\Xaml.cs" Link="Shared\Playnite\Xaml.cs" />
+    <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\playnite\common\extensions\ProcessExtensions.cs" Link="Shared\Playnite\ProcessExtensions.cs" />
+    <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\playnite\common\extensions\StringExtensions.cs" Link="Shared\Playnite\StringExtensions.cs" />
+    <Compile Include="..\third_party\playnite-common-plugin\src\Enums\ClearCacheTime.cs" Link="Shared\Enums\ClearCacheTime.cs" />
+    <Compile Include="..\third_party\playnite-common-plugin\src\CommonHelpers.cs" Link="Shared\CommonHelpers.cs" />
+    <Compile Include="..\third_party\playnite-common-plugin\src\Encryption.cs" Link="Shared\Encryption.cs" />
+    <Compile Include="..\third_party\playnite-common-plugin\src\LocalizationManager.cs" Link="Shared\LocalizationManager.cs" />
+    <Compile Include="..\third_party\playnite-common-plugin\src\LocalizeExtension.cs" Link="Shared\LocalizeExtension.cs" />
+    <Page Include="..\third_party\playnite-common-plugin\src\NumericInput.xaml">
+          <Link>Shared\NumericInput.xaml</Link>
+          <SubType>Designer</SubType>
+          <Generator>MSBuild:Compile</Generator>
+   </Page>
+  <Compile Include="..\third_party\playnite-common-plugin\src\NumericInput.xaml.cs" Link="Shared\NumericInput.xaml.cs">
+        <DependentUpon>NumericInput.xaml</DependentUpon>
+    </Compile>
+            <Compile Include="..\third_party\playnite-common-plugin\src\RetryHandler.cs" Link="Shared\RetryHandler.cs" />
+    <Compile Include="..\third_party\playnite-common-plugin\src\Serialization.cs" Link="Shared\Serialization.cs" />
+            <None Include="..\third_party\playnite-common-plugin\src\Resources\FullScreenStyles.xaml">
+            <Link>Shared\Resources\FullScreenStyles.xaml</Link>
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <TargetPath>Resources\FullScreenStyles.xaml</TargetPath>
+        </None>
+        <None Include="..\third_party\playnite-common-plugin\src\Resources\NormalStyles.xaml">
+            <Link>Shared\Resources\NormalStyles.xaml</Link>
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <TargetPath>Resources\NormalStyles.xaml</TargetPath>
+            <Generator>MSBuild:Compile</Generator>
+        </None>
+        <Compile Include="..\third_party\playnite-common-plugin\src\Resources\CommonIcons.cs">
+            <Link>Shared\Resources\CommonIcons.cs</Link>
+        </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ByteSize" Version="2.1.2" />
+    <PackageReference Include="Linguini.Bundle" Version="0.11.0" />
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.321">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Playnite.SDK" Version="11.0.0-zeta10" />
+    <PackageReference Include="SqlNadoAot" Version="3.0.0" />
+  </ItemGroup>
+</Project>

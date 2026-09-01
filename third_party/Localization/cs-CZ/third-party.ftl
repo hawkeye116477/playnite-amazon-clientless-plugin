@@ -1,0 +1,60 @@
+###
+### Automatically generated via update_3p_localization.py script using files from 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
+###
+third-party-playnite-game-start-error = Nelze spustit hru: { $var0 }
+third-party-playnite-game-install-error = Nelze nainstalovat hru: { $var0 }
+third-party-playnite-game-uninstall-error = Nelze odinstalovat hru: { $var0 }
+third-party-playnite-version-label = Verze
+third-party-playnite-ok-label = OK
+third-party-playnite-save-label = Uložit
+third-party-playnite-cancel-label = Zrušit
+third-party-playnite-yes-label = Ano
+third-party-playnite-no-label = Ne
+third-party-playnite-downloading-label = Stahování…
+third-party-playnite-loading-label = Načítání…
+third-party-playnite-settings-label = Nastavení
+third-party-playnite-settings-general-label = Obecné
+third-party-playnite-settings-advanced-label = Pokročilé
+third-party-playnite-settings-clear-cache-title = Vyčistit Mezipaměť?
+third-party-playnite-settings-playtime-import-mode-never = Nikdy
+third-party-playnite-login-required = Vyžaduje se přihlášení
+third-party-playnite-executable-title = Spustitelný soubor
+third-party-playnite-game-install-dir-title = Instalační Adresář
+third-party-playnite-library-import-error = Nepodařilo se importovat hry z { $var0 }.
+third-party-playnite-metadata-download-error = Selhalo stahování metadat: { $var0 }
+third-party-playnite-uninstalling = Probíhá odinstalace
+third-party-playnite-game-launching = Spouštění
+third-party-playnite-do-nothing = Nedělat nic
+third-party-playnite-updater-window-title = Dostupná Aktualizace
+third-party-playnite-updater-install-update = Stáhnout a Nainstalovat Aktualizaci
+third-party-playnite-check-for-updates = Zkontrolovat Aktualizace
+third-party-playnite-update-check-fail-message = Nepodařilo se zkontrolovat aktualizace.
+third-party-playnite-install-game = Instalovat
+third-party-playnite-uninstall-game = Odinstalovat
+third-party-playnite-dont-show-again-title = Příště Nezobrazovat
+third-party-playnite-extensions-updates = Aktualizace
+third-party-playnite-select-file-tooltip = Vybrat soubor...
+third-party-playnite-select-directory-tooltip = Vybrat adresář...
+third-party-playnite-option-only-manually = Pouze ručně
+third-party-playnite-option-once-a-day = Jednou denně
+third-party-playnite-option-once-a-week = Jednou týdně
+third-party-playnite-open = Otevřít
+third-party-amazon-settings-import-installed-label = Importovat nainstalované hry
+third-party-amazon-settings-import-uninstalled-label = Importovat neinstalované hry
+third-party-amazon-settings-connect-account = Připojit účet
+third-party-amazon-login-checking = Ověřuji stav přihlášení…
+third-party-amazon-logged-in = Uživatel je přihlášen
+third-party-amazon-not-logged-in = Vyžaduje přihlášení
+third-party-amazon-not-logged-in-error = Přihlášení se nezdařilo.
+third-party-amazon-authenticate-label = Autentizovat
+third-party-amazon-settings-start-game-directly = Spustit hru přímo bez použití oficiálního klienta
+third-party-amazon-trouble-shooting-account-link = Řešení problémů se synchronizací účtu
+third-party-amazon-trouble-shooting-issues = Řešení potíží
+third-party-amazon-settings-import-library-label = Importovat všechny hry
+third-party-amazon-private-account = Soukromý Účet
+third-party-amazon-public-account = Veřejný Účet
+third-party-amazon-api-key = API Klíč
+third-party-amazon-start-using-client = Začít používat { $var0 } klienta.

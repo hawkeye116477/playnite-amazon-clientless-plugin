@@ -1,0 +1,60 @@
+###
+### Automatically generated via update_3p_localization.py script using files from 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
+###
+third-party-playnite-game-start-error = Kan het spel niet starten: { $var0 }
+third-party-playnite-game-install-error = Kan het spel niet installeren: { $var0 }
+third-party-playnite-game-uninstall-error = Kan het spel niet deïnstalleren: { $var0 }
+third-party-playnite-version-label = Versie
+third-party-playnite-ok-label = Oké
+third-party-playnite-save-label = Opslaan
+third-party-playnite-cancel-label = Annuleren
+third-party-playnite-yes-label = Ja
+third-party-playnite-no-label = Nee
+third-party-playnite-downloading-label = Downloaden…
+third-party-playnite-loading-label = Laden…
+third-party-playnite-settings-label = Instellingen
+third-party-playnite-settings-general-label = Algemeen
+third-party-playnite-settings-advanced-label = Geavanceerd
+third-party-playnite-settings-clear-cache-title = Leeg Cache?
+third-party-playnite-settings-playtime-import-mode-never = Nooit
+third-party-playnite-login-required = Authenticatie nodig
+third-party-playnite-executable-title = Uitvoerbaar bestand
+third-party-playnite-game-install-dir-title = Installatie Map
+third-party-playnite-library-import-error = Kan geen spellen importeren van { $var0 }.
+third-party-playnite-metadata-download-error = Downloaden van metadata mislukt: { $var0 }
+third-party-playnite-uninstalling = Aan het deinstalleren
+third-party-playnite-game-launching = Aan het starten
+third-party-playnite-do-nothing = Doe niets
+third-party-playnite-updater-window-title = Update Beschikbaar
+third-party-playnite-updater-install-update = Installeer Update
+third-party-playnite-check-for-updates = Controleer op updates
+third-party-playnite-update-check-fail-message = Controleren op nieuwe versie mislukt.
+third-party-playnite-install-game = Installeer
+third-party-playnite-uninstall-game = Deïnstalleer
+third-party-playnite-dont-show-again-title = Niet Opnieuw Weergeven
+third-party-playnite-extensions-updates = Updates
+third-party-playnite-select-file-tooltip = Selecteer bestand...
+third-party-playnite-select-directory-tooltip = Selecteer map...
+third-party-playnite-option-only-manually = Alleen handmatig
+third-party-playnite-option-once-a-day = Eens per dag
+third-party-playnite-option-once-a-week = Eens per week
+third-party-playnite-open = Open
+third-party-amazon-settings-import-installed-label = Importeer geïnstalleerde spellen
+third-party-amazon-settings-import-uninstalled-label = Importeer niet-geïnstalleerde spellen
+third-party-amazon-settings-connect-account = Accounts koppelen
+third-party-amazon-login-checking = Verificatiestatus aan het controleren...
+third-party-amazon-logged-in = De gebruiker is geverifieerd.
+third-party-amazon-not-logged-in = Verificatie vereist
+third-party-amazon-not-logged-in-error = Kan gebruiker niet verifiëren
+third-party-amazon-authenticate-label = Verifiëren
+third-party-amazon-settings-start-game-directly = Start games zonder de officiële client op te starten.
+third-party-amazon-trouble-shooting-account-link = Probleemoplossing account synchronisatie
+third-party-amazon-trouble-shooting-issues = Probleemoplossing
+third-party-amazon-settings-import-library-label = Importeer alle spellen
+third-party-amazon-private-account = Privé-account
+third-party-amazon-public-account = Openbaar Account
+third-party-amazon-api-key = API Sleutel
+third-party-amazon-start-using-client = Starten met { $var0 } client

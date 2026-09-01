@@ -1,0 +1,60 @@
+###
+### Automatically generated via update_3p_localization.py script using files from 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
+###
+third-party-playnite-game-start-error = Spiel kann nicht gestartet werden: { $var0 }
+third-party-playnite-game-install-error = Spiel kann nicht installiert werden: { $var0 }
+third-party-playnite-game-uninstall-error = Spiel kann nicht deinstalliert werden: { $var0 }
+third-party-playnite-version-label = Version
+third-party-playnite-ok-label = OK
+third-party-playnite-save-label = Speichern
+third-party-playnite-cancel-label = Abbrechen
+third-party-playnite-yes-label = Ja
+third-party-playnite-no-label = Nein
+third-party-playnite-downloading-label = Wird heruntergeladen …
+third-party-playnite-loading-label = Wird geladen …
+third-party-playnite-settings-label = Einstellungen
+third-party-playnite-settings-general-label = Allgemein
+third-party-playnite-settings-advanced-label = Erweitert
+third-party-playnite-settings-clear-cache-title = Cache leeren?
+third-party-playnite-settings-playtime-import-mode-never = Niemals
+third-party-playnite-login-required = Authentifizierung erforderlich
+third-party-playnite-executable-title = Ausführbare Datei
+third-party-playnite-game-install-dir-title = Installationsverzeichnis
+third-party-playnite-library-import-error = Spiele von { $var0 } konnten nicht importiert werden.
+third-party-playnite-metadata-download-error = Metadaten konnten nicht heruntergeladen werden: { $var0 }
+third-party-playnite-uninstalling = Wird deinstalliert
+third-party-playnite-game-launching = Wird gestartet
+third-party-playnite-do-nothing = Nichts tun
+third-party-playnite-updater-window-title = Aktualisierung verfügbar
+third-party-playnite-updater-install-update = Aktualisierung herunterladen und installieren
+third-party-playnite-check-for-updates = Nach Aktualisierungen suchen
+third-party-playnite-update-check-fail-message = Fehler bei der Suche nach Aktualisierungen.
+third-party-playnite-install-game = Installieren
+third-party-playnite-uninstall-game = Deinstallieren
+third-party-playnite-dont-show-again-title = Nicht erneut zeigen
+third-party-playnite-extensions-updates = Aktualisierungen
+third-party-playnite-select-file-tooltip = Datei auswählen …
+third-party-playnite-select-directory-tooltip = Ordner auswählen …
+third-party-playnite-option-only-manually = Nur manuell
+third-party-playnite-option-once-a-day = Täglich
+third-party-playnite-option-once-a-week = Wöchentlich
+third-party-playnite-open = Öffnen
+third-party-amazon-settings-import-installed-label = Installierte Spiele importieren
+third-party-amazon-settings-import-uninstalled-label = Nicht installierte Spiele importieren
+third-party-amazon-settings-connect-account = Nutzerkonto verbinden
+third-party-amazon-login-checking = Authentifizierungsstatus wird überprüft …
+third-party-amazon-logged-in = Nutzer ist authentifiziert
+third-party-amazon-not-logged-in = Authentifizierung erforderlich
+third-party-amazon-not-logged-in-error = Nutzer konnte nicht authentifiziert werden.
+third-party-amazon-authenticate-label = Authentifizieren
+third-party-amazon-settings-start-game-directly = Spiele direkt starten ohne offiziellen Client
+third-party-amazon-trouble-shooting-account-link = Beheben von Problemen mit der Kontosynchronisation
+third-party-amazon-trouble-shooting-issues = Problembehebung
+third-party-amazon-settings-import-library-label = Alle Spiele importieren
+third-party-amazon-private-account = Privates Konto
+third-party-amazon-public-account = Öffentliches Konto
+third-party-amazon-api-key = API-Schlüssel
+third-party-amazon-start-using-client = Mit { $var0 }-Client starten

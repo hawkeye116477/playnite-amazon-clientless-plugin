@@ -1,0 +1,61 @@
+<UserControl x:Class="AmazonClientless.AmazonClientlessGameSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:common="clr-namespace:CommonPlugin"
+             xmlns:system="clr-namespace:System"
+             xmlns:pcmd="clr-namespace:Playnite.Commands"
+             xmlns:local="clr-namespace:AmazonClientless"
+             mc:Ignorable="d"
+             d:DesignHeight="550" d:DesignWidth="600" Loaded="AmazonClientlessGameSettingsView_OnLoaded"
+             Name="AmazonClientlessGameSettingsViewUC"
+             d:DataContext="{d:DesignInstance Type=local:AmazonClientlessGameSettingsViewModel }">
+    <UserControl.Resources>
+        <Style TargetType="Separator" BasedOn="{StaticResource HawkeyeSeparatorStyle}" />
+        <Style TargetType="Border" BasedOn="{StaticResource HawkeyeBorderStyle}" />
+        <Style TargetType="ListBox" BasedOn="{StaticResource HawkeyeListBoxStyle}" />
+        <Style TargetType="TextBlock" BasedOn="{StaticResource HawkeyeTextBlockStyle}" />
+        <Style TargetType="Button" BasedOn="{StaticResource HawkeyeButtonStyle}" />
+        <Style TargetType="Expander" BasedOn="{StaticResource HawkeyeExpanderStyle}" />
+        <Style TargetType="TabControl" BasedOn="{StaticResource HawkeyeTabControlStyle}" />
+    </UserControl.Resources>
+    <StackPanel Margin="10">
+        <StackPanel Grid.Column="0" Grid.Row="2" Margin="0,0,8,8" Orientation="Horizontal" Name="VersionSP">
+            <TextBlock Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteVersionLabel}}"
+                       VerticalAlignment="Center" HorizontalAlignment="Left" IsEnabled="False" />
+            <TextBox Name="GameVersionTxt" Margin="8,0,0,0" IsReadOnly="True"></TextBox>
+        </StackPanel>
+        <Grid Margin="0,5,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <CheckBox Grid.Column="0" Grid.Row="0"
+                      Content="{common:Localize Key={x:Static system:LOC.CommonDisableGameUpdateChecking}}"
+                      Margin="0,0,0,8" x:Name="DisableGameUpdateCheckingChk"
+                      IsChecked="{Binding ChosenGameSettings.DisableGameVersionCheck}" />
+           
+            <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonStartupArguments}}"
+                       Grid.Column="0"
+                       Grid.Row="1" Margin="0,0,8,8" VerticalAlignment="Center" HorizontalAlignment="Left" />
+            <TextBox x:Name="StartupArgumentsTxt"
+                     Grid.Column="1" Grid.Row="1" Margin="0,0,0,8" VerticalContentAlignment="Center"
+                     HorizontalContentAlignment="Left" Text="{Binding StartupArgumentsTxt}" />
+            <Button x:Name="StartupArgumentsHelpBtn"
+                    Grid.Column="2" Grid.Row="1" Margin="8,0,0,8" Content="&#xefca;"
+                    FontFamily="{DynamicResource IcoFont}"
+                    Command="{x:Static pcmd:Commands.OpenUrlCommand}"
+                    CommandParameter="https://github.com/hawkeye116477/playnite-amazon-clientless-plugin/wiki/Game-startup-arguments" />
+        </Grid>
+    </StackPanel>
+</UserControl>

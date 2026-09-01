@@ -1,0 +1,60 @@
+###
+### Automatically generated via update_3p_localization.py script using files from 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
+###
+third-party-playnite-game-start-error = Nem lehet elindítani a játékot: { $var0 }
+third-party-playnite-game-install-error = { $var0 } játék nem telepíthető
+third-party-playnite-game-uninstall-error = { $var0 } játék nem eltávolítható
+third-party-playnite-version-label = Verzió
+third-party-playnite-ok-label = OK
+third-party-playnite-save-label = Mentés
+third-party-playnite-cancel-label = Mégse
+third-party-playnite-yes-label = Igen
+third-party-playnite-no-label = Nem
+third-party-playnite-downloading-label = Letöltés...
+third-party-playnite-loading-label = Betöltés…
+third-party-playnite-settings-label = Beállítások
+third-party-playnite-settings-general-label = Általános
+third-party-playnite-settings-advanced-label = Speciális beállítások
+third-party-playnite-settings-clear-cache-title = Gyorsítótár ürítése?
+third-party-playnite-settings-playtime-import-mode-never = Sosem
+third-party-playnite-login-required = Hitelesítés szükséges
+third-party-playnite-executable-title = Program
+third-party-playnite-game-install-dir-title = Telepítési hely
+third-party-playnite-library-import-error = Nem sikerült a { $var0 } játékok importálása.
+third-party-playnite-metadata-download-error = Hiba a metaadatok letöltésekor: { $var0 }
+third-party-playnite-uninstalling = Eltávolítás
+third-party-playnite-game-launching = Indítás
+third-party-playnite-do-nothing = Ne tegyen semmit
+third-party-playnite-updater-window-title = Frissítés elérhető
+third-party-playnite-updater-install-update = Frissítés letöltése és telepítése
+third-party-playnite-check-for-updates = Frissítések keresése
+third-party-playnite-update-check-fail-message = Nem sikerült ellenőrizni a frissítéseket.
+third-party-playnite-install-game = Telepítés
+third-party-playnite-uninstall-game = Eltávolítás
+third-party-playnite-dont-show-again-title = Ne mutasd többször
+third-party-playnite-extensions-updates = Frissítések
+third-party-playnite-select-file-tooltip = Fájl kiválasztása…
+third-party-playnite-select-directory-tooltip = Mappa kiválasztása…
+third-party-playnite-option-only-manually = Csak kézzel
+third-party-playnite-option-once-a-day = Naponta egyszer
+third-party-playnite-option-once-a-week = Hetente egyszer
+third-party-playnite-open = Megnyitás
+third-party-amazon-settings-import-installed-label = Telepített játékok importálása
+third-party-amazon-settings-import-uninstalled-label = Nem telepített játékok importálása
+third-party-amazon-settings-connect-account = Összekapcsolás a fiókkal
+third-party-amazon-login-checking = Hitelesítés ellenőrzése…
+third-party-amazon-logged-in = Felhasználó hitelesítve
+third-party-amazon-not-logged-in = Felhasználói hitelesítés szükséges.
+third-party-amazon-not-logged-in-error = Felhasználói hitelesítés sikertelen.
+third-party-amazon-authenticate-label = Bejelentkezés
+third-party-amazon-settings-start-game-directly = Játékok indítása a hivatalos kliens futtatása nélkül
+third-party-amazon-trouble-shooting-account-link = Fiók szinkronizálási hibaelhárító
+third-party-amazon-trouble-shooting-issues = Hibaelhárítás
+third-party-amazon-settings-import-library-label = Minden játék importálása
+third-party-amazon-private-account = Nem publikus fiók
+third-party-amazon-public-account = Publikus fiók
+third-party-amazon-api-key = API Kulcs
+third-party-amazon-start-using-client = { $var0 } használata

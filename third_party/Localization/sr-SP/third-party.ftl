@@ -1,0 +1,60 @@
+###
+### Automatically generated via update_3p_localization.py script using files from 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
+###
+third-party-playnite-game-start-error = Не може да се покрене игра: { $var0 }
+third-party-playnite-game-install-error = Не може да се инсталира игра: { $var0 }
+third-party-playnite-game-uninstall-error = Не може да се деинсталира игра: { $var0 }
+third-party-playnite-version-label = Верзија
+third-party-playnite-ok-label = ОК
+third-party-playnite-save-label = Сачувај
+third-party-playnite-cancel-label = Откажи
+third-party-playnite-yes-label = Да
+third-party-playnite-no-label = Не
+third-party-playnite-downloading-label = Преузимање…
+third-party-playnite-loading-label = Учитавање...
+third-party-playnite-settings-label = Подешавања
+third-party-playnite-settings-general-label = Опште
+third-party-playnite-settings-advanced-label = Напредно
+third-party-playnite-settings-clear-cache-title = Очисти кеширане податке?
+third-party-playnite-settings-playtime-import-mode-never = Никад
+third-party-playnite-login-required = Потребна је провера
+third-party-playnite-executable-title = Покретни фајл
+third-party-playnite-game-install-dir-title = Инсталациони директоријум
+third-party-playnite-library-import-error = Неуспешно увођење игара из { $var0 }.
+third-party-playnite-metadata-download-error = Неуспело преузимање метаподатака: { $var0 }
+third-party-playnite-uninstalling = Деинсталирање
+third-party-playnite-game-launching = Покретање
+third-party-playnite-do-nothing = Не ради ништа
+third-party-playnite-updater-window-title = Доступно је ажурирање
+third-party-playnite-updater-install-update = Преузми и инсталирај ажурирање
+third-party-playnite-check-for-updates = Провери да ли постоје ажурирања
+third-party-playnite-update-check-fail-message = Неуспешна провера нових ажурирања.
+third-party-playnite-install-game = Инсталирај
+third-party-playnite-uninstall-game = Деинсталирај
+third-party-playnite-dont-show-again-title = Не приказуј поново
+third-party-playnite-extensions-updates = Ажурирања
+third-party-playnite-select-file-tooltip = Изаберите фајл...
+third-party-playnite-select-directory-tooltip = Изаберите фасциклу...
+third-party-playnite-option-only-manually = Само ручно
+third-party-playnite-option-once-a-day = Једном дневно
+third-party-playnite-option-once-a-week = Једном недељно
+third-party-playnite-open = Отвори
+third-party-amazon-settings-import-installed-label = Увези инсталиране игре
+third-party-amazon-settings-import-uninstalled-label = Увези неинсталиране игре
+third-party-amazon-settings-connect-account = Повежи налог
+third-party-amazon-login-checking = Проверавање статуса аутентификације...
+third-party-amazon-logged-in = Корисник је проверен
+third-party-amazon-not-logged-in = Захтева аутентификацију
+third-party-amazon-not-logged-in-error = Неуспешна аутентификација корисника
+third-party-amazon-authenticate-label = Аутентификуј
+third-party-amazon-settings-start-game-directly = Покрени игре директно без покретања званичног клијента
+third-party-amazon-trouble-shooting-account-link = Решавање проблема са синхронизацијом налога
+third-party-amazon-trouble-shooting-issues = Решавање проблема
+third-party-amazon-settings-import-library-label = Увези све игре
+third-party-amazon-private-account = Приватан налог
+third-party-amazon-public-account = Јавни налог
+third-party-amazon-api-key = API кључ
+third-party-amazon-start-using-client = Крени користити клијент { $var0 }

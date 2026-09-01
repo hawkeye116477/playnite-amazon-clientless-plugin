@@ -1,0 +1,60 @@
+###
+### Automatically generated via update_3p_localization.py script using files from 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
+###
+third-party-playnite-game-start-error = Не може да стартира играта: { $var0 }
+third-party-playnite-game-install-error = Не може да се инсталира играта: { $var0 }
+third-party-playnite-game-uninstall-error = Не може да се деинсталира играта: { $var0 }
+third-party-playnite-version-label = Версия
+third-party-playnite-ok-label = OK
+third-party-playnite-save-label = Запази
+third-party-playnite-cancel-label = Отказ
+third-party-playnite-yes-label = Да
+third-party-playnite-no-label = Не
+third-party-playnite-downloading-label = Изтегля се...
+third-party-playnite-loading-label = Зарежда се...
+third-party-playnite-settings-label = Настройки
+third-party-playnite-settings-general-label = Общи
+third-party-playnite-settings-advanced-label = Разширени
+third-party-playnite-settings-clear-cache-title = Изчистване на кеша?
+third-party-playnite-settings-playtime-import-mode-never = Никога
+third-party-playnite-login-required = Изисква се удостоверяване
+third-party-playnite-executable-title = Изпълним
+third-party-playnite-game-install-dir-title = Инсталационна папка
+third-party-playnite-library-import-error = Неуспешно импортиране на игри от { $var0 }.
+third-party-playnite-metadata-download-error = Неуспешно изтегляне на метаданни: { $var0 }
+third-party-playnite-uninstalling = Деинсталиране
+third-party-playnite-game-launching = Стартиране
+third-party-playnite-do-nothing = Не правете нищо
+third-party-playnite-updater-window-title = Налична актуализация
+third-party-playnite-updater-install-update = Изтеглете и инсталирайте актуализация
+third-party-playnite-check-for-updates = Проверка за актуализации
+third-party-playnite-update-check-fail-message = Неуспешна проверка за нова версия.
+third-party-playnite-install-game = Инсталиране
+third-party-playnite-uninstall-game = Деинсталиране
+third-party-playnite-dont-show-again-title = Не показвай отново
+third-party-playnite-extensions-updates = Актуализации
+third-party-playnite-select-file-tooltip = Изберете файл...
+third-party-playnite-select-directory-tooltip = Изберете папка...
+third-party-playnite-option-only-manually = Само ръчно
+third-party-playnite-option-once-a-day = Веднъж на ден
+third-party-playnite-option-once-a-week = Веднъж седмично
+third-party-playnite-open = Отвори
+third-party-amazon-settings-import-installed-label = Импортиране на инсталирани игри
+third-party-amazon-settings-import-uninstalled-label = Импортиране на неинсталирани игри
+third-party-amazon-settings-connect-account = Свързване на акаунт
+third-party-amazon-login-checking = Проверява се състоянието на удостоверяване...
+third-party-amazon-logged-in = Потребителят е удостоверен
+third-party-amazon-not-logged-in = Изисква удостоверяване
+third-party-amazon-not-logged-in-error = Неуспешно удостоверяване на потребителя.
+third-party-amazon-authenticate-label = Удостоверяване
+third-party-amazon-settings-start-game-directly = Стартиране на игри директно без стартиране на официален клиент
+third-party-amazon-trouble-shooting-account-link = Отстраняване на проблеми със синхронизирането на акаунт
+third-party-amazon-trouble-shooting-issues = Отстраняване на проблеми
+third-party-amazon-settings-import-library-label = Импортиране на всички игри
+third-party-amazon-private-account = Личен акаунт
+third-party-amazon-public-account = Публичен акаунт
+third-party-amazon-api-key = API ключ
+third-party-amazon-start-using-client = Започнете да използвате { $var0 } клиент

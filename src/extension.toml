@@ -1,0 +1,11 @@
+﻿id = "hawkeye116477.AmazonClientless"
+name = "Amazon Clientless library integration"
+author = "hawkeye116477"
+version = "1.0"
+module = "AmazonClientless.dll"
+
+# Troubleshooting link to be shown on addons view
+#help_link = ""
+
+# Source code link to be shown on addons view
+#source_link = ""

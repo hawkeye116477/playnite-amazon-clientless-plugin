@@ -1,0 +1,182 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.IO;
+
+namespace Playnite.Common
+{
+    public class MonitorProcess(Process process)
+    {
+        public bool IsProcessRunning()
+        {
+            return !process.HasExited;
+        }
+    }
+
+    public class MonitorProcessTree
+    {
+        private List<int> relatedIds = [];
+
+        public MonitorProcessTree(int originalId)
+        {
+            relatedIds.Add(originalId);
+        }
+
+        public bool IsProcessTreeRunning()
+        {
+            if (relatedIds.Count == 0)
+            {
+                return false;
+            }
+
+            var runningIds = new List<int>();
+            foreach (var proc in Process.GetProcesses().Where(a => a.SessionId != 0))
+            {
+                if (proc.TryGetParentId(out var parent))
+                {
+                    if (relatedIds.Contains(parent) && !relatedIds.Contains(proc.Id))
+                    {
+                        relatedIds.Add(proc.Id);
+                    }
+                }
+
+                if (relatedIds.Contains(proc.Id))
+                {
+                    runningIds.Add(proc.Id);
+                }
+            }
+
+            relatedIds = runningIds;
+            return relatedIds.Count > 0;
+        }
+    }
+
+    public class MonitorProcessNames
+    {
+        private readonly ILogger logger = LogManager.GetLogger();
+        private readonly List<string>? procNames = [];
+        private readonly List<string> procNamesNoExt = [];
+
+        public MonitorProcessNames(string directory)
+        {
+            var dir = directory;
+            try
+            {
+                dir = Paths.GetFinalPathName(directory);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Failed to get target path for a directory {directory}");
+            }
+
+            if (Directory.Exists(dir))
+            {
+                var executables = Directory.GetFiles(dir, "*.exe", SearchOption.AllDirectories);
+                procNames = executables.Select(a => Path.GetFileName(a)).ToList();
+                procNamesNoExt = executables.Select(a => Path.GetFileNameWithoutExtension(a)).ToList();
+            }
+        }
+
+        public bool IsTrackable()
+        {
+            return procNames?.Count > 0;
+        }
+
+        public int IsProcessRunning()
+        {
+            foreach (var process in Process.GetProcesses().Where(a => a.SessionId != 0))
+            {
+                if (process.TryGetMainModuleFileName(out var procPath))
+                {
+                    if (procNames != null && procPath != null && procNames.Contains(Path.GetFileName(procPath)))
+                    {
+                        return process.Id;
+                    }
+                }
+                else if (procNamesNoExt.Contains(process.ProcessName))
+                {
+                    return process.Id;
+                }
+            }
+
+            return 0;
+        }
+    }
+
+    public class MonitorDirectory
+    {
+        private readonly ILogger logger = LogManager.GetLogger();
+        private readonly string dir;
+
+        public MonitorDirectory(string directory)
+        {
+            dir = directory;
+
+            try
+            {
+                dir = Paths.GetFinalPathName(directory);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Failed to get target path for a directory {directory}");
+            }
+        }
+
+        public bool IsTrackable()
+        {
+            if (dir.IsNullOrWhiteSpace())
+            {
+                return false;
+            }
+
+            return Directory.Exists(dir);
+        }
+
+        public int IsProcessRunning()
+        {
+            foreach (var process in Process.GetProcesses().Where(a => a.SessionId != 0))
+            {
+                if (process.TryGetMainModuleFileName(out var procPath) &&
+                    procPath != null &&
+                    procPath.Contains(dir, StringComparison.OrdinalIgnoreCase))
+                {
+                    return process.Id;
+                }
+            }
+
+            return 0;
+        }
+    }
+}
+
+public class MonitorProcessName
+{
+    public string ProcessName { get; }
+
+    public MonitorProcessName(string processName)
+    {
+        if (processName.IsNullOrWhiteSpace())
+        {
+            throw new Exception("Non empty process name must be specified.");
+        }
+
+        ProcessName = processName;
+    }
+
+    public int IsProcessRunning()
+    {
+        foreach (var process in Process.GetProcesses().Where(a => a.SessionId != 0))
+        {
+            using (process)
+            {
+                if (process.ProcessName == ProcessName)
+                {
+                    return process.Id;
+                }
+            }
+        }
+
+        return 0;
+    }
+}

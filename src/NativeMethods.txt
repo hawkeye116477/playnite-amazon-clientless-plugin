@@ -1,0 +1,7 @@
+CreateFile
+GetFinalPathNameByHandle
+OpenProcess
+QueryFullProcessImageName
+NtQueryInformationProcess
+PROCESS_BASIC_INFORMATION
+PROCESSINFOCLASS
