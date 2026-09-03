@@ -4,6 +4,7 @@ using AmazonClientless.Models;
 using CommonPlugin;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Playnite;
+using PlayniteMod;
 
 namespace AmazonClientless;
 

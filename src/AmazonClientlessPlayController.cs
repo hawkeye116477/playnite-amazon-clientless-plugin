@@ -4,7 +4,7 @@ using AmazonClientless.Services;
 using CommonPlugin;
 using Linguini.Shared.Types.Bundle;
 using Playnite;
-using Playnite.Common;
+using PlayniteMod;
 
 namespace AmazonClientless;
 
@@ -15,7 +15,7 @@ public class AmazonClientlessPlayController(Game game) : PlayController(game.Lib
     private CancellationTokenSource? watcherToken;
     private readonly IPlayniteApi playniteApi = AmazonClientlessPlugin.PlayniteApi;
     private AmazonClientlessLauncher launcher = new AmazonClientlessLauncher();
-    private readonly ILogger logger = LogManager.GetLogger();
+    private readonly ILogger logger = LogManager.GetLogger<AmazonClientlessPlayController>();
 
     public override async ValueTask DisposeAsync()
     {

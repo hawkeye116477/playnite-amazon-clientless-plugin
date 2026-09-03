@@ -1,8 +1,7 @@
 using System.IO;
 using AmazonClientless.Models;
 using CommonPlugin;
-using Playnite;
-using Playnite.Common;
+using PlayniteMod;
 
 namespace AmazonClientless;
 

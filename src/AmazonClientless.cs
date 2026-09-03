@@ -5,12 +5,13 @@ using CommonPlugin.Enums;
 using CommonPlugin.Resources;
 using Linguini.Shared.Types.Bundle;
 using Playnite;
+using PlayniteMod;
 
 namespace AmazonClientless;
 
 public class AmazonClientlessPlugin : Plugin
 {
-    private static readonly ILogger Logger = LogManager.GetLogger();
+    private static readonly ILogger Logger = LogManager.GetLogger<AmazonClientlessPlugin>();
     public const string Id = "hawkeye116477.AmazonClientless";
     public const string LibraryName = "Amazon Games";
     public const string ShortPluginName = "Amazon Clientless";

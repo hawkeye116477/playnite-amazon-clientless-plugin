@@ -1,10 +1,8 @@
-﻿using Playnite.Common;
-using System;
-using System.Collections;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
+using Playnite;
 
-namespace Playnite;
+namespace PlayniteMod;
 
 public static class CmdLineTools
 {
@@ -15,9 +13,9 @@ public static class CmdLineTools
 
 // UseShellExecute set excplicitly because it used to be default on Framework but no longer is on Core.
 // To preserve the same behavior as in P10. Also it's way more lenient to running things that are not actuall exes.
-public static partial class ProcessStarter
+public static class ProcessStarter
 {
-    private static readonly ILogger logger = LogManager.GetLogger();
+    private static readonly ILogger Logger = LogManager.GetLogger(typeof(ProcessStarter));
 
     public static Process? StartUrl(WebLink webLink)
     {
@@ -44,7 +42,7 @@ public static partial class ProcessStarter
                 return null;
         }
 
-        logger.Debug($"Opening URL: {url}");
+        Logger.Debug($"Opening URL: {url}");
         try
         {
             return Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
@@ -52,12 +50,13 @@ public static partial class ProcessStarter
         catch (Exception e)
         {
             // There are some crash report with 0x80004005 error when opening standard URL.
-            logger.Error(e, "Failed to open URL.");
+            Logger.Error(e, "Failed to open URL.");
             return Process.Start(CmdLineTools.Cmd, $"/C start {url}");
         }
     }
 
-    public static Process? StartProcess(string path, string? arguments = null, string? workDir = null, bool asAdmin = false, bool noWindow = false)
+    public static Process? StartProcess(
+        string path, string? arguments = null, string? workDir = null, bool asAdmin = false, bool noWindow = false)
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
 
@@ -87,9 +86,11 @@ public static partial class ProcessStarter
         return Process.Start(info);
     }
 
-    public static int StartProcessWait(string path, string? arguments = null, string? workDir = null, bool asAdmin = false, bool noWindow = false)
+    public static int StartProcessWait(
+        string path, string? arguments = null, string? workDir = null, bool asAdmin = false, bool noWindow = false)
     {
-        using var proc = StartProcess(path, arguments, workDir, asAdmin, noWindow) ?? throw new Exception("Failed to start process, no process was started.");
+        using var proc = StartProcess(path, arguments, workDir, asAdmin, noWindow) ??
+                         throw new Exception("Failed to start process, no process was started.");
         proc.WaitForExit();
         return proc.ExitCode;
     }
@@ -152,7 +153,7 @@ public static partial class ProcessStarter
         {
             foreach (var env in environmentVariables)
             {
-                if (sensitiveValues.Any(s => env.Key.ToString()!.Contains(s, StringComparison.OrdinalIgnoreCase)))
+                if (sensitiveValues.Any(s => env.Key!.Contains(s, StringComparison.OrdinalIgnoreCase)))
                 {
                     allEnvironmentVariables += $"{env.Key}=*** ";
                 }
@@ -168,6 +169,7 @@ public static partial class ProcessStarter
         {
             tokens = [.. command.ArgumentList];
         }
+
         for (var i = 0; i < tokens.Count - 1; i++)
         {
             var current = tokens[i];
@@ -178,20 +180,23 @@ public static partial class ProcessStarter
                 tokens[i + 1] = "***";
             }
         }
+
         var safeArguments = string.Join(" ", tokens);
-        
+
         var debugLog = $"Executing command: {allEnvironmentVariables}{command.FileName} {safeArguments} .";
         if (!command.WorkingDirectory.IsNullOrEmpty())
         {
             debugLog += $"\nWorking directory: {command.WorkingDirectory}) .";
         }
+
         if (!command.Verb.IsNullOrEmpty())
         {
             debugLog += $"\nVerb: {command.Verb} .";
         }
-        logger.Debug(debugLog);
+
+        Logger.Debug(debugLog);
     }
-    
+
     public static Process? StartProcess(ProcessStartInfo processStartInfo, Dictionary<string, string>? environmentVariables = null)
     {
         AddCommandToLog(processStartInfo, environmentVariables);
@@ -205,6 +210,7 @@ public static partial class ProcessStarter
         {
             processStartInfo.WorkingDirectory = new FileInfo(processStartInfo.FileName).Directory?.FullName;
         }
+
         return Process.Start(processStartInfo);
     }
 }

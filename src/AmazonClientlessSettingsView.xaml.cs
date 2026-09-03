@@ -7,6 +7,7 @@ using CommonPlugin;
 using CommonPlugin.Enums;
 using Linguini.Shared.Types.Bundle;
 using Playnite;
+using PlayniteMod;
 
 namespace AmazonClientless
 {
@@ -15,7 +16,7 @@ namespace AmazonClientless
     /// </summary>
     public partial class AmazonClientlessSettingsView : UserControl
     {
-        private readonly ILogger logger = LogManager.GetLogger();
+        private readonly ILogger logger = LogManager.GetLogger<AmazonClientlessSettingsView>();
 
         public AmazonClientlessSettingsView()
         {

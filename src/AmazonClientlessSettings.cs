@@ -5,6 +5,7 @@ using CommonPlugin;
 using CommonPlugin.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Playnite;
+using PlayniteMod;
 
 namespace AmazonClientless;
 
@@ -47,7 +48,7 @@ public partial class AmazonClientlessPluginSettings : ObservableObject
 [INotifyPropertyChanged]
 public partial class AmazonClientlessSettingsHandler(AmazonClientlessPlugin plugin) : PluginSettingsHandler
 {
-    private static readonly ILogger Logger = LogManager.GetLogger();
+    private static readonly ILogger Logger = LogManager.GetLogger<AmazonClientlessSettingsHandler>();
 
     [ObservableProperty]
     public partial AmazonClientlessPluginSettings? Settings { get; set; } = null;

@@ -8,12 +8,13 @@ using CommonPlugin;
 using Microsoft.Win32;
 using Playnite;
 using Playnite.WebViews;
+using PlayniteMod;
 
 namespace AmazonClientless.Services;
 
 public class AmazonAccountClient(IPlayniteApi api)
 {
-    private readonly ILogger logger = LogManager.GetLogger();
+    private readonly ILogger logger = LogManager.GetLogger<AmazonAccountClient>();
 
     private const string LoginUrl =
         @"https://www.amazon.com/ap/signin";

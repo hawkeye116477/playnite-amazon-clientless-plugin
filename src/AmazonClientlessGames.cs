@@ -4,6 +4,7 @@ using AmazonClientless.Models;
 using AmazonClientless.Services;
 using CommonPlugin;
 using Playnite;
+using PlayniteMod;
 using SqlNado;
 
 namespace AmazonClientless;
