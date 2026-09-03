@@ -14,5 +14,5 @@ public static class AmazonClientlessTroubleshootingInformation
         }
     }
 
-    public static string GamesInstallationPath => AmazonClientlessLauncher.GamesInstallationPath;
+    public static string GamesInstallationPath => AmazonClientlessGames.InstallationPath;
 }

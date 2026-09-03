@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Windows.Media;
 using AmazonClientless.Enums;
 using CommonPlugin;
 using CommonPlugin.Enums;
@@ -194,9 +193,8 @@ public class AmazonClientlessPlugin : Plugin
 
     public override async Task<List<ImportableGame>> GetGamesAsync(LibraryGetGamesArgs args)
     {
-        var launcher = new AmazonClientlessLauncher();
         var allGames = new List<ImportableGame>();
-        var importableInstalledGames = launcher.ConvertInstalledToImportableGames();
+        var importableInstalledGames = AmazonClientlessGames.ConvertInstalledToImportableGames();
         Exception? importError = null;
 
         if (Settings.ImportInstalledGames)
@@ -217,7 +215,7 @@ public class AmazonClientlessPlugin : Plugin
         {
             try
             {
-                var libraryGames = await launcher.GetLibraryGames();
+                var libraryGames = await AmazonClientlessGames.GetLibraryGames();
                 Logger.Debug($"Found {libraryGames.Count} library Amazon games.");
                 if (!Settings.ImportUninstalledGames)
                 {

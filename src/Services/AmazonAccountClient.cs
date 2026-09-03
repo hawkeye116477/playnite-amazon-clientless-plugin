@@ -1,6 +1,5 @@
 using System.IO;
 using System.Net.Http;
-using System.Security.Policy;
 using System.Security.Principal;
 using System.Text;
 using System.Web;
@@ -27,6 +26,9 @@ public class AmazonAccountClient(IPlayniteApi api)
 
     public static readonly RetryHandler RetryHandler = new RetryHandler(new HttpClientHandler());
     public static readonly HttpClient HttpClient = new HttpClient(RetryHandler);
+    
+    public static string EncryptedTokensPath =>
+        Path.Combine(Path.Combine(AmazonClientlessPlugin.PlayniteApi.UserDataDir, "tokens_encrypted.json"));
 
     public async Task LogOut()
     {
@@ -36,7 +38,7 @@ public class AmazonAccountClient(IPlayniteApi api)
             WindowHeight = 700,
         });
         await webView.DeleteDomainCookiesAsync(".amazon.com");
-        FileSystem.DeleteFile(AmazonClientlessLauncher.EncryptedTokensPath);
+        FileSystem.DeleteFile(EncryptedTokensPath);
     }
 
     public async Task Login()
@@ -144,8 +146,8 @@ public class AmazonAccountClient(IPlayniteApi api)
             {
                 authData.Response.Success.Tokens.Bearer.Token_obtain_time = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 var finalResponse = Serialization.ToJson(authData.Response.Success);
-                Directory.CreateDirectory(Path.GetDirectoryName(AmazonClientlessLauncher.EncryptedTokensPath)!);
-                Encryption.EncryptToFile(AmazonClientlessLauncher.EncryptedTokensPath,
+                Directory.CreateDirectory(Path.GetDirectoryName(EncryptedTokensPath)!);
+                Encryption.EncryptToFile(EncryptedTokensPath,
                     finalResponse,
                     Encoding.UTF8,
                     WindowsIdentity.GetCurrent().User!.Value);
@@ -227,12 +229,12 @@ public class AmazonAccountClient(IPlayniteApi api)
 
     private DeviceRegistrationResponse.ResponseWrapper.SuccessWrapper? LoadTokens()
     {
-        if (File.Exists(AmazonClientlessLauncher.EncryptedTokensPath))
+        if (File.Exists(EncryptedTokensPath))
         {
             try
             {
                 return Serialization.FromJson<DeviceRegistrationResponse.ResponseWrapper.SuccessWrapper>(Encryption.DecryptFromFile(
-                    AmazonClientlessLauncher.EncryptedTokensPath, Encoding.UTF8,
+                    EncryptedTokensPath, Encoding.UTF8,
                     WindowsIdentity.GetCurrent().User?.Value!));
             }
             catch (Exception e)
@@ -250,9 +252,9 @@ public class AmazonAccountClient(IPlayniteApi api)
         if (tokens != null)
         {
             var tokenLastUpdateTime = new DateTime();
-            if (File.Exists(AmazonClientlessLauncher.EncryptedTokensPath))
+            if (File.Exists(EncryptedTokensPath))
             {
-                tokenLastUpdateTime = File.GetLastWriteTime(AmazonClientlessLauncher.EncryptedTokensPath);
+                tokenLastUpdateTime = File.GetLastWriteTime(EncryptedTokensPath);
             }
 
             var tokenExpirySeconds = tokens.Tokens.Bearer.Expires_in;
@@ -287,7 +289,7 @@ public class AmazonAccountClient(IPlayniteApi api)
                     }
 
                     var jsonTokens = Serialization.ToJson(tokens);
-                    Encryption.EncryptToFile(AmazonClientlessLauncher.EncryptedTokensPath,
+                    Encryption.EncryptToFile(EncryptedTokensPath,
                         jsonTokens,
                         Encoding.UTF8,
                         WindowsIdentity.GetCurrent().User?.Value!);

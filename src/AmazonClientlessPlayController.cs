@@ -35,7 +35,7 @@ public class AmazonClientlessPlayController(Game game) : PlayController(game.Lib
             var installProgressOptions =
                 new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonFinishingInstallation), false);
             await playniteApi.Dialogs.ShowAsyncBlockingProgressAsync(installProgressOptions,
-                async a => { await AmazonClientlessLauncher.CompleteGameInstallation(game.LibraryGameId!, game.InstallDirectory!); });
+                async a => { await AmazonClientlessGames.CompleteGameInstallation(game.LibraryGameId!, game.InstallDirectory!); });
         }
     }
 
@@ -65,8 +65,8 @@ public class AmazonClientlessPlayController(Game game) : PlayController(game.Lib
         var mainBinaryPath = "";
         if (noLauncher)
         {
-            var gameConfig = AmazonClientlessLauncher.GetGameConfiguration(game.InstallDirectory!);
-            if (gameConfig != null && !AmazonClientlessLauncher.GetGameRequiresClient(gameConfig))
+            var gameConfig = AmazonClientlessGames.GetGameConfiguration(game.InstallDirectory!);
+            if (gameConfig != null && !AmazonClientlessGames.GetGameRequiresClient(gameConfig))
             {
                 canLaunchOffline = true;
                 if (gameConfig.Main?.Command != null)

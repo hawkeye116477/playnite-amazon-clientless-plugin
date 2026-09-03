@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Windows;
-using CommonPlugin;
+﻿using CommonPlugin;
 using Playnite;
 
 namespace AmazonClientless;

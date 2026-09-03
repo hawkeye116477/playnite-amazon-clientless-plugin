@@ -125,7 +125,7 @@ namespace AmazonClientless
                 MessageBoxButtons.YesNo, MessageBoxSeverity.Question);
             if (result == Playnite.MessageBoxResult.Yes)
             {
-                AmazonClientlessLauncher.ClearCache();
+                AmazonClientlessGames.ClearCache();
             }
         }
 
