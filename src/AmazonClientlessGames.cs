@@ -12,6 +12,7 @@ namespace AmazonClientless;
 public class AmazonClientlessGames
 {
     private static readonly SpecImportableProperty PcSpecProperty = new("pc_windows");
+
     public static string InstallationPath
     {
         get
@@ -84,7 +85,7 @@ public class AmazonClientlessGames
                !config.Main.ClientId.IsNullOrEmpty() &&
                config.Main.AuthScopes.HasItems();
     }
-    
+
     public static string NormalizeGameTitle(string gameTitle)
     {
         var newGameName = gameTitle.RemoveMarks().Replace("•", " ");
@@ -99,7 +100,7 @@ public class AmazonClientlessGames
 
         return newGameName;
     }
-    
+
     public static Dictionary<string, InstalledGamesWrapper.Installed> GetInstalledGames()
     {
         var games = new Dictionary<string, InstalledGamesWrapper.Installed>();
@@ -151,12 +152,12 @@ public class AmazonClientlessGames
                 InstallState = InstallState.Installed,
                 Platforms = [PcSpecProperty],
             };
-            importableGames.Add(game.Id, game);
+            importableGames.Add(game.GameId, game);
         }
 
         return importableGames;
     }
-    
+
     public static async Task<List<ImportableGame>> GetLibraryGames()
     {
         var games = new List<ImportableGame>();
@@ -182,7 +183,7 @@ public class AmazonClientlessGames
 
         return games;
     }
-    
+
     internal static void ClearCache()
     {
         var dataDir = AmazonClientlessPlugin.PlayniteApi.UserDataDir;
