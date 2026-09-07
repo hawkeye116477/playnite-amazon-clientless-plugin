@@ -1,5 +1,5 @@
 ﻿id = "hawkeye116477.AmazonClientless"
-name = "Amazon Games Clientless library integration"
+name = "Amazon Games Clientless Library Integration"
 author = "hawkeye116477"
 version = "_version_"
 module = "AmazonClientless.dll"

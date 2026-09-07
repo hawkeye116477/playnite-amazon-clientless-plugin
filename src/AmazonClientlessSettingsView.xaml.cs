@@ -159,8 +159,9 @@ namespace AmazonClientless
             var troubleshootingJson = Serialization.ToJson(troubleshootingInformationTxt, true);
             Clipboard.SetText(troubleshootingJson);
         }
+        
 
-        private async void AmazonClientlessSettingsView_OnLoaded(object sender, RoutedEventArgs e)
+        private async void AmazonClientlessSettingsView_OnInitialized(object? sender, EventArgs e)
         {
             await UpdateAuthStatus();
             var updatePolicyOptions = new Dictionary<UpdatePolicy, string>

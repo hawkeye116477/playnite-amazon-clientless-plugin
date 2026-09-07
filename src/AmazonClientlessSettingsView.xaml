@@ -8,7 +8,7 @@
              xmlns:common="clr-namespace:CommonPlugin" xmlns:system="clr-namespace:System"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=local:AmazonClientlessSettingsHandler}"
-             d:DesignHeight="600" d:DesignWidth="800" Loaded="AmazonClientlessSettingsView_OnLoaded">
+             d:DesignHeight="600" d:DesignWidth="800" Initialized="AmazonClientlessSettingsView_OnInitialized">
 
     <TabControl ScrollViewer.VerticalScrollBarVisibility="Disabled"
                 HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
