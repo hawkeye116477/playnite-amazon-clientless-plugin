@@ -25,6 +25,8 @@ public class AmazonClientlessPlugin : Plugin
     public IUnifiedDownloadManagerApi UnifiedDownloadManagerApi { get; set; } = null!;
     public AmazonClientlessDownloadLogic UnifiedDownloadLogic { get; set; } = null!;
     public DownloadManagerData PluginDownloadData { get; set; } = null!;
+    public Dictionary<string, InstalledGamesWrapper.Installed> InstalledAppList { get; set; } = [];
+    public bool InstalledAppListModified { get; set; } = false;
 
     public AmazonClientlessPlugin()
     {
@@ -50,6 +52,7 @@ public class AmazonClientlessPlugin : Plugin
         CommonHelpers.LoadNeededResources();
         UnifiedDownloadLogic = new AmazonClientlessDownloadLogic();
         PluginDownloadData = AmazonClientlessDownloadLogic.LoadSavedDownloadData();
+        InstalledAppList = AmazonClientlessGames.GetInstalledAppList();
     }
 
     private static void LoadLocalization()
@@ -377,5 +380,36 @@ public class AmazonClientlessPlugin : Plugin
     public static string GetCachePath(string dirName)
     {
         return Path.Combine(PlayniteApi.UserDataDir, "cache", dirName);
+    }
+    
+    public override async Task OnApplicationShutdownAsync(OnApplicationShutdownArgs args)
+    {
+        var settings = GetSettings();
+        if (settings.AutoClearCache != ClearCacheTime.Never)
+        {
+            var nextClearingTime = settings.NextClearingTime;
+            if (nextClearingTime != 0)
+            {
+                DateTimeOffset now = DateTime.UtcNow;
+                if (now.ToUnixTimeSeconds() >= nextClearingTime)
+                {
+                    AmazonClientlessGames.ClearCache();
+                    settings.NextClearingTime = GetNextClearingTime(settings.AutoClearCache);
+                    SavePluginSettings(settings);
+                }
+            }
+            else
+            {
+                settings.NextClearingTime = GetNextClearingTime(settings.AutoClearCache);
+                SavePluginSettings(settings);
+            }
+        }
+
+        AmazonClientlessDownloadLogic.SaveDownloadData();
+        if (InstalledAppListModified)
+        {
+            var commonHelpers = Instance.CommonHelpers;
+            commonHelpers.SaveJsonSettingsToFile(InstalledAppList, "", "installed", true);
+        }
     }
 }

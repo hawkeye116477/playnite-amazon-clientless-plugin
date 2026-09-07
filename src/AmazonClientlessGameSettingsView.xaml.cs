@@ -19,7 +19,7 @@ public partial class AmazonClientlessGameSettingsView : UserControl
     private void AmazonClientlessGameSettingsView_OnLoaded(object sender, RoutedEventArgs e)
     {
         commonHelpers.SetControlBackground(this);
-        var appList = AmazonClientlessGames.GetInstalledGames();
+        var appList = AmazonClientlessGames.GetAllInstalledGames();
         if (appList.TryGetValue(Game.LibraryGameId!, out var installed))
         {
             GameVersionTxt.Text = installed.Version;

@@ -102,7 +102,27 @@ public class AmazonClientlessGames
         return newGameName;
     }
 
-    public static Dictionary<string, InstalledGamesWrapper.Installed> GetInstalledGames()
+    public static Dictionary<string, InstalledGamesWrapper.Installed> GetInstalledAppList()
+    {
+        var installedAppList = new Dictionary<string, InstalledGamesWrapper.Installed>();
+        var installListPath = Path.Combine(AmazonClientlessPlugin.PlayniteApi.UserDataDir, "installed.json");
+        if (File.Exists(installListPath))
+        {
+            var content = FileSystem.ReadFileAsStringSafe(installListPath);
+            if (!content.IsNullOrWhiteSpace() &&
+                Serialization.TryFromJson(content, out Dictionary<string, InstalledGamesWrapper.Installed>? nonEmptyList))
+            {
+                if (nonEmptyList != null)
+                {
+                    installedAppList = nonEmptyList;
+                }
+            }
+        }
+
+        return installedAppList;
+    }
+
+    public static Dictionary<string, InstalledGamesWrapper.Installed> GetAllInstalledGames()
     {
         var games = new Dictionary<string, InstalledGamesWrapper.Installed>();
         var nileAppList = AmazonClientlessLauncher.GetNileInstalledAppList();
@@ -142,7 +162,7 @@ public class AmazonClientlessGames
 
     public static Dictionary<string, ImportableGame> ConvertInstalledToImportableGames()
     {
-        var installedGames = GetInstalledGames();
+        var installedGames = GetAllInstalledGames();
         var importableGames = new Dictionary<string, ImportableGame>();
         foreach (var installedGame in installedGames)
         {
@@ -224,5 +244,4 @@ public class AmazonClientlessGames
             }
         }
     }
-    
 }

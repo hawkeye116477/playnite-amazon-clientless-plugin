@@ -7,6 +7,7 @@ public class FullGameManifest
     public List<GameFile> AllFiles { get; set; } = [];
     public ManifestHeader ManifestHeader { get; set; } = new();
     public bool ErrorDisplayed { get; set; } = false;
+    public string? Version { get; set; } = "0";
 
     public class GameFile
     {

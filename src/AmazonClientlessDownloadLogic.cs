@@ -37,7 +37,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
     private string? BaseUrl { get; set; }
     public static int MaxMaxWorkers = 40;
     public static int DefaultMaxWorkers = 20;
-    
+
     public async Task StartDownload(UnifiedDownload downloadTask)
     {
         var matchingPluginTask =
@@ -190,6 +190,31 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                 DateTimeOffset now = DateTime.UtcNow;
                 downloadTask.Status = UnifiedDownloadStatus.Completed;
                 downloadTask.CompletedTime = now.ToUnixTimeSeconds();
+                var installedAppList = AmazonClientlessPlugin.Instance.InstalledAppList;
+                var installedGameInfo = new InstalledGamesWrapper.Installed
+                {
+                    Version = manifest.Version ?? "0",
+                    Path = downloadTask.FullInstallPath,
+                    Name = downloadTask.Name,
+                    Size = downloadTask.DownloadSizeBytes,
+                    ID = downloadTask.GameId,
+                };
+                installedAppList.Remove(downloadTask.GameId);
+
+                var game = new Game();
+                var existingGame = AmazonClientlessPlugin.PlayniteApi.Library.Games.FirstOrDefault(item =>
+                    item.LibraryId == AmazonClientlessPlugin.Id && item.LibraryGameId == downloadTask.GameId);
+                if (existingGame != null)
+                {
+                    game = existingGame;
+                }
+
+                game.InstallDirectory = installedGameInfo.Path;
+                game.InstallSize = (ulong)installedGameInfo.Size;
+                game.InstallState = InstallState.Installed;
+                await AmazonClientlessPlugin.PlayniteApi.Library.Games.UpdateAsync(game);
+                installedAppList.Add(downloadTask.GameId, installedGameInfo);
+                AmazonClientlessPlugin.Instance.InstalledAppListModified = true;
             }
         }
     }
@@ -402,7 +427,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
             }
         }, SpeedReporterCts!.Token);
     }
-    
+
     private void UpdateSmoothQueue(Queue<double> queue, double rawValue, int max)
     {
         queue.Enqueue(rawValue);

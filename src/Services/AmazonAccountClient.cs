@@ -445,6 +445,7 @@ public class AmazonAccountClient(IPlayniteApi api)
         {
             throw new Exception("User is not authenticated.");
         }
+
         var entitlementId = await GetEntitlementId(productId);
         var manifest = new GameDownloadManifest();
         var requestData = new
@@ -512,13 +513,14 @@ public class AmazonAccountClient(IPlayniteApi api)
                 }
             }
         }
-        
+
         if (!correctJson)
         {
             if (!await GetIsUserLoggedIn())
             {
                 throw new Exception("User is not authenticated.");
             }
+
             var downloadManifest = await GetGameDownload(productId, productTitle);
             if (!downloadManifest.DownloadUrl.IsNullOrEmpty())
             {
@@ -550,9 +552,9 @@ public class AmazonAccountClient(IPlayniteApi api)
                     {
                         decompressedBody = await Helpers.DecompressLzma(bodyBytes);
                     }
-                    
+
                     var body = Serializer.Deserialize<Manifest>(decompressedBody);
-                    
+
                     manifest.ManifestHeader = header;
 
                     foreach (var package in body.Packages)
@@ -574,10 +576,12 @@ public class AmazonAccountClient(IPlayniteApi api)
                             {
                                 parsedFile.Hash.Value = Convert.ToHexString(gameFile.Hash!.Value!).ToLowerInvariant();
                             }
+
                             manifest.AllFiles.Add(parsedFile);
                         }
                     }
-                    
+
+                    manifest.Version = downloadManifest.VersionId;
                     var cacheDir = AmazonClientlessPlugin.GetCachePath("manifest");
                     Directory.CreateDirectory(cacheDir);
                     await File.WriteAllTextAsync(cacheInfoFile, Serialization.ToJson(manifest));
