@@ -35,7 +35,9 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
     private long TotalSize { get; set; }
     private long totalDiskBytes;
     private string? BaseUrl { get; set; }
-
+    public static int MaxMaxWorkers = 40;
+    public static int DefaultMaxWorkers = 20;
+    
     public async Task StartDownload(UnifiedDownload downloadTask)
     {
         var matchingPluginTask =
@@ -134,7 +136,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
             var maxWorkers = downloadProperties.MaxWorkers;
             if (downloadProperties.MaxWorkers == 0)
             {
-                maxWorkers = CommonHelpers.CpuThreadsNumber;
+                maxWorkers = DefaultMaxWorkers;
             }
 
             if (downloadProperties.DownloadAction != DownloadAction.Update)
