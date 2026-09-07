@@ -1,11 +1,14 @@
 ﻿using System.IO;
 using AmazonClientless.Enums;
+using AmazonClientless.Models;
 using CommonPlugin;
 using CommonPlugin.Enums;
 using CommonPlugin.Resources;
 using Linguini.Shared.Types.Bundle;
 using Playnite;
 using PlayniteMod;
+using UnifiedDownloadManagerApiNS;
+using UnifiedDownloadManagerApiNS.Interfaces;
 
 namespace AmazonClientless;
 
@@ -16,11 +19,12 @@ public class AmazonClientlessPlugin : Plugin
     public const string LibraryName = "Amazon Games";
     public const string ShortPluginName = "Amazon Clientless";
     public static IPlayniteApi PlayniteApi { get; private set; } = null!;
-
     public AmazonClientlessPluginSettings Settings { get; set; } = null!;
     public static AmazonClientlessPlugin Instance { get; private set; } = null!;
     public CommonHelpers CommonHelpers { get; set; } = null!;
-
+    public IUnifiedDownloadManagerApi UnifiedDownloadManagerApi { get; set; } = null!;
+    public AmazonClientlessDownloadLogic UnifiedDownloadLogic { get; set; } = null!;
+    public DownloadManagerData PluginDownloadData { get; set; } = null!;
 
     public AmazonClientlessPlugin()
     {
@@ -44,6 +48,8 @@ public class AmazonClientlessPlugin : Plugin
         LoadLocalization();
         CommonHelpers = new CommonHelpers(PlayniteApi);
         CommonHelpers.LoadNeededResources();
+        UnifiedDownloadLogic = new AmazonClientlessDownloadLogic();
+        PluginDownloadData = AmazonClientlessDownloadLogic.LoadSavedDownloadData();
     }
 
     private static void LoadLocalization()
@@ -108,12 +114,11 @@ public class AmazonClientlessPlugin : Plugin
         {
             if (installedPluginGames.Count >= 1)
             {
-                AmazonClientlessGameMenuActions installedMenuActions = new(installedPluginGames);
                 if (pluginGames.Count == 1)
                 {
                     menuItems.Add(new MenuItemImpl(
                         LocalizationManager.Instance.GetString(LOC.CommonMove),
-                        async _ => { await installedMenuActions.OpenMoveGameWindow(); }
+                        async _ => { await AmazonClientlessGameMenuActions.OpenMoveGameWindow(); }
                       , icon: CommonIcons.MoveIcon)
                     );
                 }
@@ -129,14 +134,12 @@ public class AmazonClientlessPlugin : Plugin
 
                 menuItems.Add(new MenuItemImpl(
                     LocalizationManager.Instance.GetString(LOC.CommonRepair),
-                    _ =>
-                    {
-                        // TODO: Add repair action
-                    }, icon: CommonIcons.RepairIcon
+                    _ => { AmazonClientlessGameMenuActions.OpenRepairWindow(installedPluginGames); },
+                    icon: CommonIcons.RepairIcon
                 ));
                 menuItems.Add(new MenuItemImpl(
                     LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteCheckForUpdates),
-                    async _ => { await installedMenuActions.OpenCheckForGamesUpdatesWindow(); },
+                    async _ => { await AmazonClientlessGameMenuActions.OpenCheckForGamesUpdatesWindow(); },
                     icon: CommonIcons.UpdateIcon
                 ));
             }
@@ -148,10 +151,7 @@ public class AmazonClientlessPlugin : Plugin
                 {
                     menuItems.Add(new MenuItemImpl(
                         LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteInstallGame),
-                        _ =>
-                        {
-                            // TODO: Add installer
-                        }, icon: CommonIcons.InstallIcon
+                        _ => { AmazonClientlessGameMenuActions.OpenInstallerWindow(notInstalledPluginGames); }, icon: CommonIcons.InstallIcon
                     ));
                 }
             }
@@ -232,7 +232,7 @@ public class AmazonClientlessPlugin : Plugin
                     }
                     else
                     {
-                        allGames.Add(game);
+                        allGames.AddMissing(game);
                     }
                 }
             }
@@ -277,8 +277,12 @@ public class AmazonClientlessPlugin : Plugin
 
     public override async Task<List<InstallController>> GetInstallActionsAsync(GetInstallActionsArgs args)
     {
-        // Implement this if you know how to install args.Game.
-        return [];
+        if (args.Game.LibraryId != Id)
+        {
+            return await base.GetInstallActionsAsync(args);
+        }
+
+        return [new AmazonClientlessInstallController(args.Game)];
     }
 
     public override async Task<List<UninstallController>> GetUninstallActionsAsync(GetUninstallActionsArgs args)
@@ -293,6 +297,22 @@ public class AmazonClientlessPlugin : Plugin
         return new AmazonClientlessMetadataProvider();
     }
 
+    public override async Task PostInitializationAsync(PostInitializationArgs args)
+    {
+        var result = await PlayniteApi.CallPluginAsync(new PluginCallRequestAsyncArgs(
+            UnifiedDownloadManagerSharedProperties.Id,
+            UnifiedDownloadManagerSharedProperties.GetApi));
+        if (result is { Success: true, Value: IUnifiedDownloadManagerApi udmApi })
+        {
+            UnifiedDownloadManagerApi = udmApi;
+        }
+    }
+    
+    public override async Task<object?> OnPluginCallRequestAsync(PluginCallRequestAsyncArgs args)
+    {
+        return args.CallId == UnifiedDownloadManagerSharedProperties.GetDownloadLogic ? UnifiedDownloadLogic : null;
+    }
+    
     public void SavePluginSettings(AmazonClientlessPluginSettings settings)
     {
         var settingsFile = Path.Combine(PlayniteApi.UserDataDir, "settings.json");
@@ -352,5 +372,10 @@ public class AmazonClientlessPlugin : Plugin
         }
 
         return updateTime?.ToUnixTimeSeconds() ?? 0;
+    }
+
+    public static string GetCachePath(string dirName)
+    {
+        return Path.Combine(PlayniteApi.UserDataDir, "cache", dirName);
     }
 }

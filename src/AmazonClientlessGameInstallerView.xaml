@@ -1,0 +1,151 @@
+<UserControl x:Class="AmazonClientless.AmazonClientlessGameInstallerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:AmazonClientless"
+             xmlns:common="clr-namespace:CommonPlugin" xmlns:system="clr-namespace:System"
+             xmlns:res="clr-namespace:CommonPlugin.Resources"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="AmazonClientlessGameInstallerView_OnLoaded">
+    <UserControl.Resources>
+        <Style TargetType="Separator" BasedOn="{StaticResource HawkeyeSeparatorStyle}" />
+        <Style TargetType="Border" BasedOn="{StaticResource HawkeyeBorderStyle}" />
+        <Style TargetType="ListBox" BasedOn="{StaticResource HawkeyeListBoxStyle}" />
+        <Style TargetType="TextBlock" BasedOn="{StaticResource HawkeyeTextBlockStyle}" />
+        <Style TargetType="RepeatButton" BasedOn="{StaticResource HawkeyeRepeatButtonStyle}" />
+        <Style TargetType="Button" BasedOn="{StaticResource HawkeyeButtonStyle}" />
+        <Style TargetType="Expander" BasedOn="{StaticResource HawkeyeExpanderStyle}" />
+        <Style TargetType="TabControl" BasedOn="{StaticResource HawkeyeTabControlStyle}" />
+    </UserControl.Resources>
+    <DockPanel Margin="10">
+        <Grid DockPanel.Dock="Bottom" Margin="0,5,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Separator Margin="0,5,0,0" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5"
+                        Grid.Row="1" Grid.Column="0">
+                <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonDownloadSize}}"
+                           HorizontalAlignment="Left" VerticalAlignment="Center" />
+                <TextBlock x:Name="DownloadSizeTB"
+                           Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteLoadingLabel}}"
+                           VerticalAlignment="Top" Margin="5,0,5,0" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0"
+                        Grid.Row="2" Grid.Column="0">
+                <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static system:LOC.CommonInstallSize}}"
+                           Margin="0,0,0,0" />
+                <TextBlock x:Name="InstallSizeTB"
+                           Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteLoadingLabel}}"
+                           VerticalAlignment="Top" Margin="5,0,5,0" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5"
+                        Grid.Row="1" Grid.Column="1">
+                <TextBlock VerticalAlignment="Top"
+                           Text="{common:Localize Key={x:Static system:LOC.CommonSpaceAvailable}}" Margin="0,0,0,0" />
+                <TextBlock VerticalAlignment="Top"
+                           Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteLoadingLabel}}"
+                           Margin="5,0,5,0" Name="SpaceTB" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="2"
+                        Grid.Column="1" Name="AfterInstallingSP">
+                <TextBlock VerticalAlignment="Top"
+                           Text="{common:Localize Key={x:Static system:LOC.CommonAfterInstalling}}" Margin="0,0,0,0" />
+                <TextBlock VerticalAlignment="Top"
+                           Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteLoadingLabel}}"
+                           Margin="5,0,5,0" Name="AfterInstallingTB" />
+            </StackPanel>
+        </Grid>
+        <StackPanel x:Name="TopSP" DockPanel.Dock="Top">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,0"
+                        VerticalAlignment="Top" Name="TopButtonsSP">
+                <Button x:Name="RepairBtn"
+                        Content="{common:Icon 
+                        Code={x:Static res:CommonIcons.IcoRepair},
+                        Text={common:Localize Key={x:Static system:LOC.CommonRepair}}}"
+                        FontFamily="{DynamicResource IcoFont}" HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Margin="0,0,8,0" Visibility="Collapsed" Click="RepairBtn_OnClick" />
+                <Button x:Name="InstallBtn"
+                        Content="{common:Icon Code={x:Static res:CommonIcons.IcoInstall}, 
+                        Text={common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteInstallGame}}}"
+                        FontFamily="{DynamicResource IcoFont}" HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom" Margin="0,0,8,0"
+                        IsEnabled="False" Click="InstallBtn_OnClick"/>
+                <Button x:Name="ReloadBtn"
+                        Content="{common:Icon 
+                        Code={x:Static res:CommonIcons.Reload},
+                        Text={common:Localize Key={x:Static system:LOC.CommonReload}}}"
+                        FontFamily="{DynamicResource IcoFont}" HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom" Margin="0,0,8,0" IsEnabled="False" Click="ReloadBtn_OnClick"/>
+                <Button x:Name="CancelBtn"
+                        Content="{common:Icon 
+                        Code={x:Static res:CommonIcons.Cancel},
+                        Text={common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteCancelLabel}}}"
+                        FontFamily="{DynamicResource IcoFont}" HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom" Margin="0,0,8,0" IsCancel="True" />
+            </StackPanel>
+            <Separator Margin="0,5" />
+            <DockPanel Margin="0,0,0,5" Name="FolderDP">
+                <TextBlock Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteGameInstallDirTitle}}"
+                           VerticalAlignment="Center" Margin="0,0,10,0">
+                </TextBlock>
+                <Button DockPanel.Dock="Right" Padding="5" Margin="5 0 0 0"
+                        Content="{common:Icon Code={x:Static res:CommonIcons.SelectFolder}}"
+                        Name="ChooseGamePathBtn" FontFamily="{DynamicResource IcoFont}"
+                        ToolTip="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSelectDirectoryTooltip}}" 
+                        Click="ChooseGamePathBtn_OnClick"/>
+                <TextBox Name="SelectedGamePathTxt" Text="" VerticalAlignment="Center" Margin="0" />
+            </DockPanel>
+            <Border BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="GamesBrd"
+                    Visibility="Collapsed" Margin="0,0,0,5">
+                <Expander Header="{common:Localize Key={x:Static system:LOC.CommonGames}}" Margin="2,2,5,2"
+                          HorizontalAlignment="Left" IsExpanded="True">
+                    <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                        <ItemsControl BorderThickness="0" Name="GamesLB" Margin="5,0,5,5">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                        <TextBox Text="{Binding Name}" IsReadOnly="True" Margin="0,0,10,0"
+                                                 VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Expander>
+            </Border>
+            <Border BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,5,0,0"
+                    x:Name="AdvancedOptionsExpBrd">
+                <Expander Header="{common:Localize Key={x:Static system:LOC.CommonAdvancedOptions}}" Margin="2,2,5,2"
+                          HorizontalAlignment="Left" x:Name="AdvancedOptionsExp">
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonMaxWorkers}}" Grid.Row="3"
+                                   Grid.Column="0"
+                                   Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                        <common:NumericInput Grid.Row="3" Grid.Column="1" Margin="15,0,0,5" MinValue="0"
+                                             x:Name="MaxWorkersNI" />
+                    </Grid>
+                </Expander>
+            </Border>
+        </StackPanel>
+    </DockPanel>
+</UserControl>

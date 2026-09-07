@@ -1,7 +1,7 @@
 ﻿id = "hawkeye116477.AmazonClientless"
-name = "Amazon Clientless library integration"
+name = "Amazon Games Clientless library integration"
 author = "hawkeye116477"
-version = "1.0"
+version = "_version_"
 module = "AmazonClientless.dll"
 
 # Troubleshooting link to be shown on addons view
@@ -9,3 +9,8 @@ module = "AmazonClientless.dll"
 
 # Source code link to be shown on addons view
 #source_link = ""
+
+[[dependencies]]
+addon_id = "hawkeye116477.UDM"
+min_version = "2.0"
+is_optional = true

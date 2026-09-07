@@ -46,6 +46,7 @@
             <Link>ThirdPartyLicenses.txt</Link>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <Compile Include="..\third_party\twl.py\sds-proto2.g.cs" Link="Shared\Generated\sds-proto2.g.cs"/>
     </ItemGroup>
     <ItemGroup Label="compileInclude3p">
         <Compile Include="..\third_party\Playnite_mod\Commands.cs" Link="Shared\Playnite_mod\Commands.cs"/>
@@ -57,8 +58,13 @@
         <Compile Include="..\third_party\Playnite_mod\Extensions\ProcessExtensions.cs" Link="Shared\Playnite_mod\ProcessExtensions.cs"/>
         <Compile Include="..\third_party\Playnite_mod\Extensions\StringExtensions.cs" Link="Shared\Playnite_mod\StringExtensions.cs"/>
         <Compile Include="..\third_party\playnite-common-plugin\src\Enums\ClearCacheTime.cs" Link="Shared\Enums\ClearCacheTime.cs"/>
+        <Compile Include="..\third_party\playnite-common-plugin\src\Enums\DownloadAction.cs" Link="Shared\Enums\DownloadAction.cs" />
+        <Compile Include="..\third_party\playnite-common-plugin\src\Enums\DownloadStatus.cs" Link="Shared\Enums\DownloadStatus.cs" />
         <Compile Include="..\third_party\playnite-common-plugin\src\CommonHelpers.cs" Link="Shared\CommonHelpers.cs"/>
         <Compile Include="..\third_party\playnite-common-plugin\src\Encryption.cs" Link="Shared\Encryption.cs"/>
+         <Compile Include="..\third_party\playnite-common-plugin\src\IconExtension.cs">
+            <Link>Shared\IconExtension.cs</Link>
+        </Compile>
         <Compile Include="..\third_party\playnite-common-plugin\src\LocalizationManager.cs" Link="Shared\LocalizationManager.cs"/>
         <Compile Include="..\third_party\playnite-common-plugin\src\LocalizeExtension.cs" Link="Shared\LocalizeExtension.cs"/>
         <Page Include="..\third_party\playnite-common-plugin\src\NumericInput.xaml">
@@ -91,12 +97,22 @@
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="ByteSize" Version="2.1.2"/>
+        <PackageReference Include="LightProto" Version="1.4.0" />
         <PackageReference Include="Linguini.Bundle" Version="0.11.0"/>
         <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.333">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Playnite.SDK" Version="11.0.0-alpha14" />
+        <PackageReference Include="SharpCompress" Version="0.50.4" />
         <PackageReference Include="SqlNadoAot" Version="3.1.1" />
     </ItemGroup>
+    <ItemGroup>
+      <Reference Include="UnifiedDownloadManagerApi">
+        <HintPath>..\..\playnite-unifiedDownloadManager-plugin\src\api\bin\Release\net10.0-windows\UnifiedDownloadManagerApi.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="python &quot;$(ProjectDir)..\make_scripts\after_build.py&quot; $(TargetDir)" />
+    </Target>
 </Project>

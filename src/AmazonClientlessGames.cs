@@ -12,6 +12,7 @@ namespace AmazonClientless;
 public class AmazonClientlessGames
 {
     private static readonly SpecImportableProperty PcSpecProperty = new("pc_windows");
+    private static readonly ILogger Logger = LogManager.GetLogger<AmazonClientlessGames>();
 
     public static string InstallationPath
     {
@@ -193,4 +194,35 @@ public class AmazonClientlessGames
             Directory.Delete(cacheDir, true);
         }
     }
+
+    public static void ClearSpecificGamesCache(List<string> gameIds)
+    {
+        var cacheDirs = new List<string>
+        {
+            AmazonClientlessPlugin.GetCachePath("manifest"),
+            AmazonClientlessPlugin.GetCachePath("update"),
+        };
+
+        foreach (var cacheDir in cacheDirs)
+        {
+            if (Directory.Exists(cacheDir))
+            {
+                foreach (var file in Directory.EnumerateFiles(cacheDir, "*", SearchOption.AllDirectories))
+                {
+                    try
+                    {
+                        if (gameIds.Any(gameId => file.Contains(gameId)))
+                        {
+                            File.Delete(file);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex, $"An error occured during removing {file} file");
+                    }
+                }
+            }
+        }
+    }
+    
 }

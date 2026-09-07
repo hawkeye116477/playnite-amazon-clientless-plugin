@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using System.IO;
 using System.Net.Http;
 using System.Security.Principal;
@@ -5,10 +6,13 @@ using System.Text;
 using System.Web;
 using AmazonClientless.Models;
 using CommonPlugin;
+using LightProto;
 using Microsoft.Win32;
 using Playnite;
 using Playnite.WebViews;
 using PlayniteMod;
+using Sds;
+using File = System.IO.File;
 
 namespace AmazonClientless.Services;
 
@@ -22,12 +26,12 @@ public class AmazonAccountClient(IPlayniteApi api)
     private const string LoginUserAgent =
         "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) @amzn/aga-electron-platform/1.0.0 Chrome/78.0.3904.130 Electron/7.1.9 Safari/537.36";
 
-    private const string LauncherUserAgent =
+    public const string LauncherUserAgent =
         "com.amazon.agslauncher.win/3.0.9782.3";
 
     public static readonly RetryHandler RetryHandler = new RetryHandler(new HttpClientHandler());
     public static readonly HttpClient HttpClient = new HttpClient(RetryHandler);
-    
+
     public static string EncryptedTokensPath =>
         Path.Combine(Path.Combine(AmazonClientlessPlugin.PlayniteApi.UserDataDir, "tokens_encrypted.json"));
 
@@ -210,6 +214,46 @@ public class AmazonAccountClient(IPlayniteApi api)
             }
         } while (!nextToken.IsNullOrEmpty());
 
+        if (entitlements.Count > 0)
+        {
+            try
+            {
+                var jsonEntitlements = Serialization.ToJson(entitlements);
+                var cacheDir = AmazonClientlessPlugin.GetCachePath("entitlements");
+                FileSystem.WriteStringToFileSafe(Path.Combine(cacheDir, "entitlements.json"), jsonEntitlements);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "An error occured during saving entitlements");
+            }
+        }
+
+        return entitlements;
+    }
+
+    private async Task<List<Entitlement>> GetSavedEntitlements()
+    {
+        var filePath = Path.Combine(AmazonClientlessPlugin.GetCachePath("entitlements"), "entitlements.json");
+        List<Entitlement> entitlements = [];
+        bool correctJson = false;
+        if (File.Exists(filePath))
+        {
+            var content = FileSystem.ReadFileAsStringSafe(filePath);
+            if (!content.IsNullOrEmpty() && Serialization.TryFromJson(content, out List<Entitlement>? newEntitlements))
+            {
+                if (newEntitlements is { Count: > 0 })
+                {
+                    entitlements = newEntitlements;
+                    correctJson = true;
+                }
+            }
+        }
+
+        if (!correctJson)
+        {
+            entitlements = await GetAccountEntitlements();
+        }
+
         return entitlements;
     }
 
@@ -280,7 +324,6 @@ public class AmazonAccountClient(IPlayniteApi api)
                     var authResponse = await HttpClient.PostAsync(@"https://api.amazon.com/auth/token",
                         strcont);
                     var authResponseContent = await authResponse.Content.ReadAsStringAsync();
-                    logger.Debug(authResponseContent);
                     var authData =
                         Serialization.FromJson<DeviceRegistrationResponse.ResponseWrapper.SuccessWrapper.Bearer>(authResponseContent);
                     if (authData != null)
@@ -372,5 +415,181 @@ public class AmazonAccountClient(IPlayniteApi api)
         }
 
         return result.ToString();
+    }
+
+
+    public async Task<string> GetEntitlementId(string productId)
+    {
+        var entitlementId = "";
+        var entitlements = await GetSavedEntitlements();
+        if (entitlements.Count > 0)
+        {
+            var product = entitlements.FirstOrDefault(e => e.Product.ID == productId);
+            if (product != null)
+            {
+                entitlementId = product.ID;
+            }
+        }
+
+        if (entitlementId.IsNullOrEmpty())
+        {
+            logger.Error("Can't get entitlement id.");
+        }
+
+        return entitlementId;
+    }
+
+    public async Task<GameDownloadManifest> GetGameDownload(string productId, string productTitle)
+    {
+        if (!await GetIsUserLoggedIn())
+        {
+            throw new Exception("User is not authenticated.");
+        }
+        var entitlementId = await GetEntitlementId(productId);
+        var manifest = new GameDownloadManifest();
+        var requestData = new
+        {
+            Operation = "GetGameDownload",
+            EntitlementId = entitlementId
+        };
+        var stringContent = new StringContent(Serialization.ToJson(requestData, true), Encoding.UTF8, "application/json");
+        stringContent.Headers.ContentEncoding.Add("amz-1.0");
+        var request = new HttpRequestMessage(HttpMethod.Post, @"https://gaming.amazon.com/api/distribution/v2/public")
+        {
+            Content = stringContent
+        };
+        request.Headers.Add("User-Agent", LauncherUserAgent);
+        var tokens = LoadTokens();
+        request.Headers.Add("x-amzn-token", tokens?.Tokens.Bearer.Access_token);
+        request.Headers.Add("X-Amz-Target",
+            "com.amazon.animusdistributionservice.external.AnimusDistributionService.GetGameDownload");
+        try
+        {
+            using var response = await HttpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var responseContent = await response.Content.ReadAsStringAsync();
+            if (!responseContent.IsNullOrEmpty() && Serialization.TryFromJson(responseContent, out GameDownloadManifest? newManifest))
+            {
+                if (newManifest != null)
+                {
+                    manifest = newManifest;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, $"Failed to get GameDownload manifest for {productTitle}");
+        }
+
+        return manifest;
+    }
+
+    public async Task<FullGameManifest> GetGameManifest(string productId, string productTitle, bool forceRefreshCache = false)
+    {
+        var cachePath = AmazonClientlessPlugin.GetCachePath("manifest");
+        var cacheInfoFileName = $"{productId}.json";
+
+        var cacheInfoFile = Path.Combine(cachePath, cacheInfoFileName);
+        bool correctJson = false;
+        if (File.Exists(cacheInfoFile))
+        {
+            if (File.GetLastWriteTime(cacheInfoFile) < DateTime.Now.AddDays(-7) || forceRefreshCache)
+            {
+                File.Delete(cacheInfoFile);
+            }
+        }
+
+        var manifest = new FullGameManifest();
+        if (File.Exists(cacheInfoFile))
+        {
+            var content = await File.ReadAllTextAsync(cacheInfoFile);
+            if (!string.IsNullOrWhiteSpace(content) && Serialization.TryFromJson(content, out FullGameManifest? newManifest))
+            {
+                if (newManifest != null)
+                {
+                    correctJson = true;
+                    manifest = newManifest;
+                }
+            }
+        }
+        
+        if (!correctJson)
+        {
+            if (!await GetIsUserLoggedIn())
+            {
+                throw new Exception("User is not authenticated.");
+            }
+            var downloadManifest = await GetGameDownload(productId, productTitle);
+            if (!downloadManifest.DownloadUrl.IsNullOrEmpty())
+            {
+                var uri = new Uri(downloadManifest.DownloadUrl);
+                var uriBuilder = new UriBuilder(uri)
+                {
+                    Path = $"{uri.LocalPath}/manifest.proto",
+                    Query = uri.Query,
+                    Host = uri.Host
+                };
+
+                var finalUrl = uriBuilder.Uri.ToString();
+                var request = new HttpRequestMessage(HttpMethod.Get, finalUrl);
+                request.Headers.Add("User-Agent", LauncherUserAgent);
+                try
+                {
+                    using var response = await HttpClient.SendAsync(request);
+                    response.EnsureSuccessStatusCode();
+                    var responseBytes = await response.Content.ReadAsByteArrayAsync();
+
+                    var headerSize = BinaryPrimitives.ReadInt32BigEndian(responseBytes.AsSpan(0, 4));
+                    var headerBytes = responseBytes[4..(4 + headerSize)];
+                    var header = Serializer.Deserialize<ManifestHeader>(headerBytes);
+                    var algorithm = header.Compression?.Algorithm;
+                    var bodyBytes = responseBytes[(4 + headerSize)..];
+
+                    var decompressedBody = bodyBytes;
+                    if (algorithm == CompressionAlgorithm.Lzma)
+                    {
+                        decompressedBody = await Helpers.DecompressLzma(bodyBytes);
+                    }
+                    
+                    var body = Serializer.Deserialize<Manifest>(decompressedBody);
+                    
+                    manifest.ManifestHeader = header;
+
+                    foreach (var package in body.Packages)
+                    {
+                        foreach (var gameFile in package.Files)
+                        {
+                            var parsedFile = new FullGameManifest.GameFile
+                            {
+                                Mode = gameFile.Mode,
+                                Size = gameFile.Size,
+                                Hidden = gameFile.Hidden,
+                                Path = gameFile.Path,
+                                Hash = new FullGameManifest.GameFileHash
+                                {
+                                    Algorithm = gameFile.Hash?.Algorithm ?? HashAlgorithm.Sha256
+                                }
+                            };
+                            if (gameFile.Hash?.Value != null)
+                            {
+                                parsedFile.Hash.Value = Convert.ToHexString(gameFile.Hash!.Value!).ToLowerInvariant();
+                            }
+                            manifest.AllFiles.Add(parsedFile);
+                        }
+                    }
+                    
+                    var cacheDir = AmazonClientlessPlugin.GetCachePath("manifest");
+                    Directory.CreateDirectory(cacheDir);
+                    await File.WriteAllTextAsync(cacheInfoFile, Serialization.ToJson(manifest));
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, $"Failed to get GameManifest manifest for {productTitle}");
+                    manifest.ErrorDisplayed = true;
+                }
+            }
+        }
+
+        return manifest;
     }
 }

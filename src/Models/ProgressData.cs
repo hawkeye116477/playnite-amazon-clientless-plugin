@@ -1,0 +1,15 @@
+namespace AmazonClientless.Models;
+
+public class ProgressData
+{
+    public long NetworkBytes { get; set; }
+    public long DiskBytes { get; set; }
+    public long TotalBytes { get; set; }
+    public int ActiveDownloadWorkers { get; set; }
+    public int ActiveDiskWorkers { get; set; }
+    public long InitialNetworkBytes { get; set; }
+    public long InitialDiskBytes { get; set; }
+    public double Eta { get; set; }
+    public double DownloadSpeed { get; set; }
+    public double DiskSpeed { get; set; }
+}

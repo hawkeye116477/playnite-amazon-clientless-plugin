@@ -10,7 +10,12 @@ public class Entitlement
             {
                 public string? BackgroundUrl1;
                 public string? BackgroundUrl2;
+                public string? Developer;
                 public string? Publisher;
+                public string? ReleaseDate;
+                public List<string> Genres = [];
+                public List<string> GameModes = [];
+                public List<string> Keywords = [];
                 public List<string> Screenshots = [];
                 public List<string> Videos = [];
             }
