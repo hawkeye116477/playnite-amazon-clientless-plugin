@@ -45,7 +45,8 @@ public static class AmazonClientlessGameMenuActions
             {
                 GameId = game.LibraryGameId!,
                 Name = game.Name,
-                DownloadProperties = installProperties
+                DownloadProperties = installProperties,
+                FullInstallPath = installProperties.InstallPath,
             });
         }
         AmazonClientlessInstallController.LaunchInstaller(installData);

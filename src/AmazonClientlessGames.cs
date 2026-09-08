@@ -125,12 +125,20 @@ public class AmazonClientlessGames
     public static Dictionary<string, InstalledGamesWrapper.Installed> GetAllInstalledGames()
     {
         var games = new Dictionary<string, InstalledGamesWrapper.Installed>();
+        var appList = GetInstalledAppList();
         var nileAppList = AmazonClientlessLauncher.GetNileInstalledAppList();
 
-        foreach (InstalledGamesWrapper.Installed installedGame in nileAppList)
+
+        foreach (var installedGame in nileAppList)
         {
             installedGame.Name = NormalizeGameTitle(installedGame.Name);
             games.Add(installedGame.ID, installedGame);
+        }
+        
+        foreach (var installedGame in appList)
+        {
+            installedGame.Value.Name = NormalizeGameTitle(installedGame.Value.Name);
+            games.Add(installedGame.Key, installedGame.Value);
         }
 
         // Add games installed using Amazon Games Launcher

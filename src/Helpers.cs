@@ -1,5 +1,6 @@
+using System.Buffers;
 using System.IO;
-using System.Text;
+using System.Security.Cryptography;
 using Playnite;
 using SharpCompress.Compressors.LZMA;
 using SharpCompress.Compressors.Xz;
@@ -51,6 +52,44 @@ public class Helpers
         {
             Logger.Debug(ex, "Failed to decompress response");
         }
+
         return outputStream.ToArray();
+    }
+
+    public static string GetSHA256(string filePath, IProgress<int>? progress = null, CancellationToken token = default)
+    {
+        var bufferSize = 512 * 1024;
+        using var stream = new FileStream(filePath,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read,
+            bufferSize: bufferSize,
+            FileOptions.SequentialScan);
+        using var sha256 = SHA256.Create();
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        try
+        {
+            int read;
+            long total = 0;
+
+            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                sha256.TransformBlock(buffer, 0, read, null, 0);
+                total += read;
+                progress?.Report(read);
+            }
+
+            sha256.TransformFinalBlock([], 0, 0);
+            if (sha256.Hash != null)
+            {
+                return Convert.ToHexStringLower(sha256.Hash);
+            }
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
+
+        return "";
     }
 }

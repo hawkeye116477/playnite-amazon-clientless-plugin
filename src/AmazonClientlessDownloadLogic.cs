@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
@@ -14,6 +15,7 @@ using PlayniteMod.Commands;
 using UnifiedDownloadManagerApiNS;
 using UnifiedDownloadManagerApiNS.Interfaces;
 using UnifiedDownloadManagerApiNS.Models;
+using HashAlgorithm = Sds.HashAlgorithm;
 
 namespace AmazonClientless;
 
@@ -87,6 +89,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
         var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
 
         var manifest = await clientApi.GetGameManifest(downloadTask.GameId, downloadTask.Name);
+        var originalManifestJson = Serialization.ToJson(manifest);
 
         var gameDownloadManifest = await clientApi.GetGameDownload(downloadTask.GameId, downloadTask.Name);
         BaseUrl = gameDownloadManifest.DownloadUrl;
@@ -100,6 +103,177 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
             Logger.Error("No files to download.");
             downloadTask.Status = UnifiedDownloadStatus.Error;
             return;
+        }
+
+        var repairSkipPath = Path.Combine(matchingPluginTask.FullInstallPath, ".ACS_Temp");
+        Directory.CreateDirectory(repairSkipPath);
+        string repairSkipFile = Path.Combine(repairSkipPath, "repair-skip");
+
+        // Verify and repair files
+        if (Directory.Exists(matchingPluginTask.FullInstallPath) &&
+            matchingPluginTask.DownloadProperties.DownloadAction != DownloadAction.Install && !File.Exists(repairSkipFile))
+        {
+            var invalidGameFiles = new ConcurrentBag<FullGameManifest.GameFile>();
+            var reporterCts = CancellationTokenSource.CreateLinkedTokenSource(linkedCts.Token);
+            var allFiles = Directory.EnumerateFiles(matchingPluginTask.FullInstallPath, "*.*", SearchOption.AllDirectories).ToList();
+            int countFiles = allFiles.Count;
+            Logger.Debug(countFiles);
+            if (countFiles > 0)
+            {
+                var itemsMap = manifest.AllFiles.Where(i => !string.IsNullOrEmpty(i.Path) && i.Size is > 0)
+                                       .ToDictionary(i => new Uri(Path.Combine(downloadTask.FullInstallPath, i.Path!)).LocalPath, i => i);
+                downloadTask.Activity = LocalizationManager.Instance.GetString(LOC.CommonVerifying);
+                long verifiedFiles = 0;
+                long totalBytesRead = 0;
+                if (manifest.AllFiles.Count > 0)
+                {
+                    var swDelta = new Stopwatch();
+                    _ = Task.Run(async () =>
+                    {
+                        long lastUiUpdate = 0;
+                        long previousBytes = 0;
+                        swDelta = Stopwatch.StartNew();
+
+                        try
+                        {
+                            while (!reporterCts.Token.IsCancellationRequested)
+                            {
+                                await Task.Delay(500, reporterCts.Token);
+
+                                long currentBytes = Interlocked.Read(ref totalBytesRead);
+                                long deltaBytes = currentBytes - previousBytes;
+                                previousBytes = currentBytes;
+
+                                double elapsedSec = swDelta.Elapsed.TotalSeconds;
+                                swDelta.Restart();
+
+                                long currentVerified = Interlocked.Read(ref verifiedFiles);
+                                long now = Stopwatch.GetTimestamp();
+
+                                if (now - lastUiUpdate >= TimeSpan.FromMilliseconds(500).Ticks)
+                                {
+                                    lastUiUpdate = now;
+                                    _ = Application.Current.Dispatcher?.BeginInvoke((Action)(() =>
+                                    {
+                                        downloadTask.Activity =
+                                            $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
+                                        downloadTask.Elapsed = sw.Elapsed;
+                                        downloadTask.DiskWriteSpeedBytes = deltaBytes / elapsedSec;
+                                        double filesPerSecond = currentVerified / sw.Elapsed.TotalSeconds;
+                                        double remainingFiles = countFiles - currentVerified;
+                                        downloadTask.Eta = TimeSpan.FromSeconds(remainingFiles / filesPerSecond);
+                                    }));
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
+                    }, reporterCts.Token);
+
+                    try
+                    {
+                        ParallelOptions parallelOptions = new()
+                        {
+                            MaxDegreeOfParallelism = Math.Min(CommonHelpers.CpuThreadsNumber, 4),
+                            CancellationToken = downloadTask.GracefulCts!.Token
+                        };
+                        await Task.Run(() =>
+                        {
+                            Parallel.ForEach(allFiles, parallelOptions, (file, _) =>
+                            {
+                                var perFileProgress = new Progress<int>(bytes => { Interlocked.Add(ref totalBytesRead, bytes); });
+                                if (itemsMap.TryGetValue(file, out var searchedItem))
+                                {
+                                    string correctChecksum = "";
+                                    var checksumType = HashAlgorithm.Sha256;
+                                    if (searchedItem.Hash != null)
+                                    {
+                                        if (searchedItem.Hash.Algorithm != null)
+                                        {
+                                            checksumType = (HashAlgorithm)searchedItem.Hash.Algorithm;
+                                            if (checksumType != HashAlgorithm.Sha256)
+                                            {
+                                                Logger.Debug(
+                                                    $"This is {checksumType} checksum algorithm, which isn't yet supported. Please report that.");
+                                            }
+                                        }
+
+                                        if (searchedItem.Hash.Value != null)
+                                        {
+                                            correctChecksum = searchedItem.Hash.Value;
+                                        }
+
+                                        if (!string.IsNullOrEmpty(correctChecksum))
+                                        {
+                                            try
+                                            {
+                                                string? calculatedChecksum = checksumType switch
+                                                {
+                                                    HashAlgorithm.Shake128 => null,
+                                                    HashAlgorithm.Sha256 => Helpers.GetSHA256(file, perFileProgress, linkedCts.Token),
+                                                    _ => null
+                                                };
+
+                                                if (calculatedChecksum != null &&
+                                                    !string.Equals(calculatedChecksum, correctChecksum, StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    try
+                                                    {
+                                                        File.Delete(file);
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        Logger.Debug(ex);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    invalidGameFiles.Add(searchedItem);
+                                                }
+                                            }
+                                            catch (Exception hashEx)
+                                            {
+                                                Logger.Warn(hashEx, "");
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Interlocked.Increment(ref verifiedFiles);
+                            });
+                        }, linkedCts.Token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                    }
+                    finally
+                    {
+                        await reporterCts.CancelAsync();
+                        swDelta?.Stop();
+                        foreach (var invalidGameFile in invalidGameFiles)
+                        {
+                            manifest.AllFiles.Remove(invalidGameFile);
+                        }
+                        Interlocked.Exchange(ref verifiedFiles, countFiles);
+                        Application.Current.Dispatcher?.Invoke(() =>
+                        {
+                            downloadTask.Activity =
+                                $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
+                            downloadTask.Elapsed = sw.Elapsed;
+                            if (verifiedFiles == countFiles)
+                            {
+                                downloadTask.Progress = 100.0;
+                            }
+
+                            using (File.Create(repairSkipFile))
+                            {
+                            }
+                        });
+                    }
+                }
+            }
         }
 
         downloadTask.Activity = "";
@@ -151,7 +325,10 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
             Logger.Debug(
                 $"Downloading {downloadTask.Name} ({downloadTask.GameId}) to {matchingPluginTask.DownloadProperties.InstallPath} ...");
             SpeedReporterCts = CancellationTokenSource.CreateLinkedTokenSource(linkedCts.Token);
-            await DownloadGame(manifest, downloadTask.FullInstallPath, maxWorkers, linkedCts.Token);
+            if (manifest.AllFiles.Count > 0)
+            {
+                await DownloadGame(manifest, downloadTask.FullInstallPath, maxWorkers, linkedCts.Token);
+            }
         }
         catch (Exception ex)
         {
@@ -181,23 +358,54 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
             downloadTask.Eta = TimeSpan.FromSeconds(0);
             downloadTask.Elapsed = sw.Elapsed;
             downloadTask.DownloadedBytes = finalDiskBytes;
-            var currentPercentProgress = TotalSize > 0 ? (double)finalDiskBytes / TotalSize * 100 : 0;
+            double currentPercentProgress = 0.0;
+            if (TotalSize > 0)
+            {
+                currentPercentProgress = (double)finalDiskBytes / TotalSize * 100;
+            }
+            else if (downloadTask.Status != UnifiedDownloadStatus.Error)
+            {
+                currentPercentProgress = 100;
+            }
+
             downloadTask.Progress = currentPercentProgress;
             downloadTask.Activity = "";
 
             if (downloadTask.Progress >= 100)
             {
-                DateTimeOffset now = DateTime.UtcNow;
-                downloadTask.Status = UnifiedDownloadStatus.Completed;
-                downloadTask.CompletedTime = now.ToUnixTimeSeconds();
+                if (Directory.Exists(repairSkipPath))
+                {
+                    Directory.Delete(repairSkipPath, true);
+                }
+                var installedManifestPath = Path.Combine(downloadTask.FullInstallPath, ".manifest_ac");
+                var installedManifestFile = Path.Combine(installedManifestPath, "manifest.json");
+                if (File.Exists(installedManifestFile))
+                {
+                    File.Delete(installedManifestFile);
+                }
+
+                Directory.CreateDirectory(installedManifestPath);
+                await File.WriteAllTextAsync(installedManifestFile, originalManifestJson, linkedCts.Token);
+
+                var allRealFiles = Directory.GetFileSystemEntries(downloadTask.FullInstallPath, "*", SearchOption.AllDirectories);
+                double realSize = 0;
+                foreach (var file in allRealFiles)
+                {
+                    if (File.Exists(file))
+                    {
+                        var fileInfo = new FileInfo(file);
+                        realSize += fileInfo.Length;
+                    }
+                }
+
                 var installedAppList = AmazonClientlessPlugin.Instance.InstalledAppList;
                 var installedGameInfo = new InstalledGamesWrapper.Installed
                 {
                     Version = manifest.Version ?? "0",
                     Path = downloadTask.FullInstallPath,
                     Name = downloadTask.Name,
-                    Size = downloadTask.DownloadSizeBytes,
                     ID = downloadTask.GameId,
+                    Size = realSize
                 };
                 installedAppList.Remove(downloadTask.GameId);
 
@@ -215,6 +423,10 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                 await AmazonClientlessPlugin.PlayniteApi.Library.Games.UpdateAsync(game);
                 installedAppList.Add(downloadTask.GameId, installedGameInfo);
                 AmazonClientlessPlugin.Instance.InstalledAppListModified = true;
+                DateTimeOffset now = DateTime.UtcNow;
+                downloadTask.Status = UnifiedDownloadStatus.Completed;
+                downloadTask.CompletedTime = now.ToUnixTimeSeconds();
+                linkedCts.Dispose();
             }
         }
     }
@@ -317,15 +529,14 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                                                              .ConfigureAwait(false);
                             response.EnsureSuccessStatusCode();
                             await using var networkStream = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false);
-                            var fileMode = resumeStartByte > 0 ? FileMode.Append : FileMode.Create;
-
+                            var fileMode = resumeStartByte > 0 && resumeStartByte < file.Size ? FileMode.Append : FileMode.Create;
                             await RentAndUsePool(bufferSize, async buffer =>
                                 {
                                     await using var finalFileFs = new FileStream(filePath, fileMode, FileAccess.Write,
                                         FileShare.ReadWrite | FileShare.Delete, bufferSize,
                                         FileOptions.Asynchronous | FileOptions.SequentialScan);
                                     int bytesRead;
-                                    while ((bytesRead = await networkStream.ReadAsync(buffer, 0, buffer.Length, token)
+                                    while ((bytesRead = await networkStream.ReadAsync(buffer, token)
                                                                            .ConfigureAwait(false)) >
                                            0)
                                     {
