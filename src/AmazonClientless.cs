@@ -16,7 +16,7 @@ public class AmazonClientlessPlugin : Plugin
 {
     private static readonly ILogger Logger = LogManager.GetLogger<AmazonClientlessPlugin>();
     public const string Id = "hawkeye116477.AmazonClientless";
-    public const string LibraryName = "Amazon Games";
+    public const string LibraryName = "Amazon Games Clientless";
     public const string ShortPluginName = "Amazon Clientless";
     public static IPlayniteApi PlayniteApi { get; private set; } = null!;
     public AmazonClientlessPluginSettings Settings { get; set; } = null!;
