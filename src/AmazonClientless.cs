@@ -121,7 +121,7 @@ public class AmazonClientlessPlugin : Plugin
                 {
                     menuItems.Add(new MenuItemImpl(
                         LocalizationManager.Instance.GetString(LOC.CommonMove),
-                        async _ => { await AmazonClientlessGameMenuActions.OpenMoveGameWindow(); }
+                        async _ => { await AmazonClientlessGameMenuActions.OpenMoveGameWindow(installedPluginGames[0]); }
                       , icon: CommonIcons.MoveIcon)
                     );
                 }
