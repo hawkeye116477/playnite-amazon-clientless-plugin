@@ -52,7 +52,7 @@ public class AmazonClientlessPlugin : Plugin
         CommonHelpers.LoadNeededResources();
         UnifiedDownloadLogic = new AmazonClientlessDownloadLogic();
         PluginDownloadData = AmazonClientlessDownloadLogic.LoadSavedDownloadData();
-        InstalledAppList = AmazonClientlessGames.GetInstalledAppList();
+        InstalledAppList = AmazonClientlessGames.GetPluginInstalledAppList();
     }
 
     private static void LoadLocalization()

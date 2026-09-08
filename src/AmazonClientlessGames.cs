@@ -102,7 +102,7 @@ public class AmazonClientlessGames
         return newGameName;
     }
 
-    public static Dictionary<string, InstalledGamesWrapper.Installed> GetInstalledAppList()
+    public static Dictionary<string, InstalledGamesWrapper.Installed> GetPluginInstalledAppList()
     {
         var installedAppList = new Dictionary<string, InstalledGamesWrapper.Installed>();
         var installListPath = Path.Combine(AmazonClientlessPlugin.PlayniteApi.UserDataDir, "installed.json");
@@ -125,21 +125,21 @@ public class AmazonClientlessGames
     public static Dictionary<string, InstalledGamesWrapper.Installed> GetAllInstalledGames()
     {
         var games = new Dictionary<string, InstalledGamesWrapper.Installed>();
-        var appList = GetInstalledAppList();
-        var nileAppList = AmazonClientlessLauncher.GetNileInstalledAppList();
 
-
-        foreach (var installedGame in nileAppList)
-        {
-            installedGame.Name = NormalizeGameTitle(installedGame.Name);
-            games.Add(installedGame.ID, installedGame);
-        }
-        
+        var appList = GetPluginInstalledAppList();
         foreach (var installedGame in appList)
         {
             installedGame.Value.Name = NormalizeGameTitle(installedGame.Value.Name);
-            games.Add(installedGame.Key, installedGame.Value);
+            games.TryAdd(installedGame.Key, installedGame.Value);
         }
+        
+        var nileAppList = AmazonClientlessLauncher.GetNileInstalledAppList();
+        foreach (var installedGame in nileAppList)
+        {
+            installedGame.Name = NormalizeGameTitle(installedGame.Name);
+            games.TryAdd(installedGame.ID, installedGame);
+        }
+        
 
         // Add games installed using Amazon Games Launcher
         var amazonInstallSqlPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
