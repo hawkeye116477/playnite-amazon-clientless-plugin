@@ -129,8 +129,7 @@ public class AmazonClientlessPlugin : Plugin
                 {
                     menuItems.Add(new MenuItemImpl(
                         LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstallGame),
-                        // TODO: Add uninstall action
-                        async _ => { },
+                        async _ => { await AmazonClientlessUninstallController.LaunchUninstaller(installedPluginGames); },
                         icon: CommonIcons.UninstallIcon
                     ));
                 }
@@ -290,8 +289,12 @@ public class AmazonClientlessPlugin : Plugin
 
     public override async Task<List<UninstallController>> GetUninstallActionsAsync(GetUninstallActionsArgs args)
     {
-        // Implement this if you know how to uninstall args.Game.
-        return [];
+        if (args.Game.LibraryId != Id)
+        {
+            return await base.GetUninstallActionsAsync(args);
+        }
+
+        return [new AmazonClientlessUninstallController(args.Game)];
     }
 
     // Implement this method if you are implementing metadata provider via MetadataSettings.
