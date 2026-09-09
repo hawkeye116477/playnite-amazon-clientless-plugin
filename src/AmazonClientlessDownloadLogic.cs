@@ -385,10 +385,10 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                 {
                     File.Delete(installedManifestFile);
                 }
-                
-                var installedManifestDirectoryInfo = Directory.CreateDirectory(installedManifestPath); 
-                installedManifestDirectoryInfo.Attributes = FileAttributes.Directory | FileAttributes.Hidden; 
-                
+
+                var installedManifestDirectoryInfo = Directory.CreateDirectory(installedManifestPath);
+                installedManifestDirectoryInfo.Attributes = FileAttributes.Directory | FileAttributes.Hidden;
+
                 await File.WriteAllTextAsync(installedManifestFile, originalManifestJson, linkedCts.Token);
 
                 if (downloadTask.GameId != AmazonClientlessGames.AmazonGamesSdkId)
@@ -430,6 +430,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                     installedAppList.Add(downloadTask.GameId, installedGameInfo);
                     AmazonClientlessPlugin.Instance.InstalledAppListModified = true;
                 }
+
                 DateTimeOffset now = DateTime.UtcNow;
                 downloadTask.Status = UnifiedDownloadStatus.Completed;
                 downloadTask.CompletedTime = now.ToUnixTimeSeconds();
@@ -550,7 +551,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                                         Interlocked.Add(ref totalDiskBytes, bytesRead);
                                         await finalFileFs.WriteAsync(buffer.AsMemory(0, bytesRead), token).ConfigureAwait(false);
                                     }
-                                    
+
                                     if (file.Hidden == true)
                                     {
                                         File.SetAttributes(filePath, FileAttributes.Hidden);
@@ -713,7 +714,24 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
 
     public void OpenDownloadPropertiesWindow(UnifiedDownload selectedEntry)
     {
-        throw new NotImplementedException();
+        var window = PlayniteApi.CreateWindow(new WindowCreationOptions
+        {
+            ShowMaximizeButton = false
+        });
+        var matchingPluginTask =
+            AmazonClientlessPlugin.Instance.PluginDownloadData.Downloads.FirstOrDefault(t =>
+                t.GameId == selectedEntry.GameId);
+        if (matchingPluginTask != null)
+        {
+            window.Title =
+                $"{selectedEntry.Name} — {LocalizationManager.Instance.GetString(LOC.CommonDownloadProperties)}";
+            window.DataContext = matchingPluginTask;
+            window.Content = new AmazonClientlessDownloadProperties();
+            window.Owner = PlayniteApi.GetLastActiveWindow();
+            window.SizeToContent = SizeToContent.WidthAndHeight;
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            window.ShowDialog();
+        }
     }
 
     public static async Task<bool> CheckIfUdmInstalled()
