@@ -418,27 +418,22 @@ public class AmazonAccountClient(IPlayniteApi api)
     }
 
 
-    public async Task<string> GetEntitlementId(string productId)
+    public async Task<Entitlement?> GetEntitlement(string productId)
     {
-        var entitlementId = "";
         var entitlements = await GetSavedEntitlements();
+        Entitlement? entitlement = null;
         if (entitlements.Count > 0)
         {
-            var product = entitlements.FirstOrDefault(e => e.Product.ID == productId);
-            if (product != null)
-            {
-                entitlementId = product.ID;
-            }
+            entitlement = entitlements.FirstOrDefault(e => e.Product.ID == productId);
         }
-
-        if (entitlementId.IsNullOrEmpty())
+        else
         {
-            logger.Error("Can't get entitlement id.");
+            logger.Error("Can't get entitlement.");
         }
 
-        return entitlementId;
+        return entitlement;
     }
-
+    
     public async Task<GameDownloadManifest> GetGameDownload(string productId, string productTitle)
     {
         if (!await GetIsUserLoggedIn())
@@ -446,7 +441,13 @@ public class AmazonAccountClient(IPlayniteApi api)
             throw new Exception("User is not authenticated.");
         }
 
-        var entitlementId = await GetEntitlementId(productId);
+        if (productId == AmazonClientlessGames.AmazonGamesSdkId)
+        {
+            return await GetSdkDownload();
+        }
+
+        var entitlement = await GetEntitlement(productId);
+        var entitlementId = entitlement?.ID;
         var manifest = new GameDownloadManifest();
         var requestData = new
         {
@@ -484,6 +485,34 @@ public class AmazonAccountClient(IPlayniteApi api)
 
         return manifest;
     }
+
+    public async Task<GameDownloadManifest> GetSdkDownload()
+    {
+        var manifest = new GameDownloadManifest();
+        var request = new HttpRequestMessage(HttpMethod.Get,
+            @"https://gaming.amazon.com/api/distribution/v2/public/download/channel/87d38116-4cbf-4af0-a371-a5b498975346");
+        request.Headers.Add("User-Agent", LauncherUserAgent);
+        try
+        {
+            using var response = await HttpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var responseContent = await response.Content.ReadAsStringAsync();
+            if (!responseContent.IsNullOrEmpty() && Serialization.TryFromJson(responseContent, out GameDownloadManifest? newManifest))
+            {
+                if (newManifest != null)
+                {
+                    manifest = newManifest;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, $"Failed to get SdkDownload manifest");
+        }
+
+        return manifest;
+    }
+
 
     public async Task<FullGameManifest> GetGameManifest(string productId, string productTitle, bool forceRefreshCache = false)
     {
@@ -577,7 +606,13 @@ public class AmazonAccountClient(IPlayniteApi api)
                                 parsedFile.Hash.Value = Convert.ToHexString(gameFile.Hash!.Value!).ToLowerInvariant();
                             }
 
-                            manifest.AllFiles.Add(parsedFile);
+                            bool isSdkFile = parsedFile.Path != null &&
+                                             (parsedFile.Path.Contains("FuelSDK_") || parsedFile.Path.Contains("AmazonGamesSDK_")) &&
+                                             !parsedFile.Path.Contains("/._");
+                            if (productId != AmazonClientlessGames.AmazonGamesSdkId || isSdkFile)
+                            {
+                                manifest.AllFiles.Add(parsedFile);
+                            }
                         }
                     }
 

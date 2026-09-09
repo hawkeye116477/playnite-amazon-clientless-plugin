@@ -52,37 +52,40 @@ public class AmazonClientlessPlayController(Game game) : PlayController(game.Lib
         }
     }
 
-    private async Task LaunchGame(bool noLauncher = true)
+    private async Task LaunchGame()
     {
         await DisposeAsync();
         var playArgs = new List<string>();
         var globalSettings = AmazonClientlessPlugin.GetSettings();
         var gameSettings = AmazonClientlessGameSettingsViewModel.LoadGameSettings(game.LibraryGameId!);
 
-        var workingDirectory = Path.Combine(game.InstallDirectory!);
+        var workingDirectory = game.InstallDirectory!;
         var providedArgs = new List<string>();
         bool canLaunchOffline = false;
         var mainBinaryPath = "";
-        if (noLauncher)
+
+
+        var gameConfig = AmazonClientlessGames.GetGameConfiguration(game.InstallDirectory!);
+        if (gameConfig != null && !AmazonClientlessGames.GetGameRequiresClient(gameConfig!))
         {
-            var gameConfig = AmazonClientlessGames.GetGameConfiguration(game.InstallDirectory!);
-            if (gameConfig != null && !AmazonClientlessGames.GetGameRequiresClient(gameConfig))
+            canLaunchOffline = true;
+        }
+
+        if (gameConfig != null)
+        {
+            if (gameConfig.Main?.Command != null)
             {
-                canLaunchOffline = true;
-                if (gameConfig.Main?.Command != null)
-                {
-                    mainBinaryPath = Path.Combine(game.InstallDirectory!, gameConfig.Main.Command);
-                }
+                mainBinaryPath = Path.Combine(game.InstallDirectory!, gameConfig.Main.Command);
+            }
 
-                if (gameConfig.Main != null && gameConfig.Main.Args.HasNonEmptyItems())
-                {
-                    providedArgs.AddRange(gameConfig.Main.Args);
-                }
+            if (gameConfig.Main != null && gameConfig.Main.Args.HasNonEmptyItems())
+            {
+                providedArgs.AddRange(gameConfig.Main.Args);
+            }
 
-                if (gameConfig.Main != null && !gameConfig.Main.WorkingSubdirOverride.IsNullOrEmpty())
-                {
-                    workingDirectory = Path.Combine(game.InstallDirectory!, gameConfig.Main.WorkingSubdirOverride);
-                }
+            if (gameConfig.Main != null && !gameConfig.Main.WorkingSubdirOverride.IsNullOrEmpty())
+            {
+                workingDirectory = Path.Combine(game.InstallDirectory!, gameConfig.Main.WorkingSubdirOverride);
             }
         }
 
@@ -135,6 +138,25 @@ public class AmazonClientlessPlayController(Game game) : PlayController(game.Lib
                     await GameStoppedAsync(new GameStoppedArgs(0));
                     return;
                 }
+                var installedSdkManifestFile = Path.Combine(AmazonClientlessGames.AmazonGamesSdkInstallationPath, ".manifest_ac", "manifest.json");
+                if (!File.Exists(installedSdkManifestFile))
+                {
+                    logger.Warn($"Amazon Games SDK manifest file isn't available at {installedSdkManifestFile}, so most likely SDK isn't installed." +
+                                $"If game doesn't launch, then you need to reinstall this game or install other one to trigger downloading SDK.");
+                }
+                cmd.Environment.Add("FUEL_DIR", Path.Combine(AmazonClientlessGames.AmazonGamesSdkInstallationPath, "Amazon Games Services", "Legacy"));
+                cmd.Environment.Add("AMAZON_GAMES_SDK_PATH", Path.Combine(AmazonClientlessGames.AmazonGamesSdkInstallationPath, "Amazon Games Services"));
+                var entitlement = await clientApi.GetEntitlement(game.LibraryGameId!);
+                if (entitlement != null)
+                {
+                    cmd.Environment.Add("AMAZON_GAMES_FUEL_ENTITLEMENT_ID", entitlement.ID);
+                    var productSku = entitlement.Product.Sku;
+                    if (productSku != null)
+                    {
+                        cmd.Environment.Add("AMAZON_GAMES_FUEL_PRODUCT_SKU", productSku);
+                    }
+                }
+                cmd.Environment.Add("AMAZON_GAMES_FUEL_DISPLAY_NAME", clientApi.GetUsername());
             }
 
             var mainProcess = ProcessStarter.StartProcess(cmd);

@@ -13,7 +13,10 @@ public class AmazonClientlessGames
 {
     private static readonly SpecImportableProperty PcSpecProperty = new("pc_windows");
     private static readonly ILogger Logger = LogManager.GetLogger<AmazonClientlessGames>();
-
+    public const string AmazonGamesSdkId = "amazon-games-sdk";
+    public static readonly string AmazonGamesSdkBaseInstallationPath = AmazonClientlessPlugin.PlayniteApi.UserDataDir;
+    public static readonly string AmazonGamesSdkInstallationPath = Path.Combine(AmazonGamesSdkBaseInstallationPath, "Amazon Games SDK");
+    
     public static string InstallationPath
     {
         get

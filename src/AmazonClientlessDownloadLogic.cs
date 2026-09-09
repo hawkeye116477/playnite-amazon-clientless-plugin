@@ -256,6 +256,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                         {
                             manifest.AllFiles.Remove(invalidGameFile);
                         }
+
                         Interlocked.Exchange(ref verifiedFiles, countFiles);
                         Application.Current.Dispatcher?.Invoke(() =>
                         {
@@ -377,6 +378,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                 {
                     Directory.Delete(repairSkipPath, true);
                 }
+
                 var installedManifestPath = Path.Combine(downloadTask.FullInstallPath, ".manifest_ac");
                 var installedManifestFile = Path.Combine(installedManifestPath, "manifest.json");
                 if (File.Exists(installedManifestFile))
@@ -387,42 +389,45 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                 Directory.CreateDirectory(installedManifestPath);
                 await File.WriteAllTextAsync(installedManifestFile, originalManifestJson, linkedCts.Token);
 
-                var allRealFiles = Directory.GetFileSystemEntries(downloadTask.FullInstallPath, "*", SearchOption.AllDirectories);
-                double realSize = 0;
-                foreach (var file in allRealFiles)
+                if (downloadTask.GameId != AmazonClientlessGames.AmazonGamesSdkId)
                 {
-                    if (File.Exists(file))
+                    var allRealFiles = Directory.GetFileSystemEntries(downloadTask.FullInstallPath, "*", SearchOption.AllDirectories);
+                    double realSize = 0;
+                    foreach (var file in allRealFiles)
                     {
-                        var fileInfo = new FileInfo(file);
-                        realSize += fileInfo.Length;
+                        if (File.Exists(file))
+                        {
+                            var fileInfo = new FileInfo(file);
+                            realSize += fileInfo.Length;
+                        }
                     }
+
+                    var installedAppList = AmazonClientlessPlugin.Instance.InstalledAppList;
+                    var installedGameInfo = new InstalledGamesWrapper.Installed
+                    {
+                        Version = manifest.Version ?? "0",
+                        Path = downloadTask.FullInstallPath,
+                        Name = downloadTask.Name,
+                        ID = downloadTask.GameId,
+                        Size = realSize
+                    };
+                    installedAppList.Remove(downloadTask.GameId);
+
+                    var game = new Game();
+                    var existingGame = AmazonClientlessPlugin.PlayniteApi.Library.Games.FirstOrDefault(item =>
+                        item.LibraryId == AmazonClientlessPlugin.Id && item.LibraryGameId == downloadTask.GameId);
+                    if (existingGame != null)
+                    {
+                        game = existingGame;
+                    }
+
+                    game.InstallDirectory = installedGameInfo.Path;
+                    game.InstallSize = (ulong)installedGameInfo.Size;
+                    game.InstallState = InstallState.Installed;
+                    await AmazonClientlessPlugin.PlayniteApi.Library.Games.UpdateAsync(game);
+                    installedAppList.Add(downloadTask.GameId, installedGameInfo);
+                    AmazonClientlessPlugin.Instance.InstalledAppListModified = true;
                 }
-
-                var installedAppList = AmazonClientlessPlugin.Instance.InstalledAppList;
-                var installedGameInfo = new InstalledGamesWrapper.Installed
-                {
-                    Version = manifest.Version ?? "0",
-                    Path = downloadTask.FullInstallPath,
-                    Name = downloadTask.Name,
-                    ID = downloadTask.GameId,
-                    Size = realSize
-                };
-                installedAppList.Remove(downloadTask.GameId);
-
-                var game = new Game();
-                var existingGame = AmazonClientlessPlugin.PlayniteApi.Library.Games.FirstOrDefault(item =>
-                    item.LibraryId == AmazonClientlessPlugin.Id && item.LibraryGameId == downloadTask.GameId);
-                if (existingGame != null)
-                {
-                    game = existingGame;
-                }
-
-                game.InstallDirectory = installedGameInfo.Path;
-                game.InstallSize = (ulong)installedGameInfo.Size;
-                game.InstallState = InstallState.Installed;
-                await AmazonClientlessPlugin.PlayniteApi.Library.Games.UpdateAsync(game);
-                installedAppList.Add(downloadTask.GameId, installedGameInfo);
-                AmazonClientlessPlugin.Instance.InstalledAppListModified = true;
                 DateTimeOffset now = DateTime.UtcNow;
                 downloadTask.Status = UnifiedDownloadStatus.Completed;
                 downloadTask.CompletedTime = now.ToUnixTimeSeconds();

@@ -78,6 +78,22 @@ public partial class AmazonClientlessGameInstallerView : UserControl
         downloadSizeNumber = 0;
         bool gamesListShouldBeDisplayed = false;
 
+        var installedSdkManifestFile = Path.Combine(AmazonClientlessGames.AmazonGamesSdkInstallationPath, ".manifest_ac", "manifest.json");
+        if (!File.Exists(installedSdkManifestFile))
+        {
+            var sdkInstallTask = new DownloadManagerData.Download
+            {
+                FullInstallPath = AmazonClientlessGames.AmazonGamesSdkInstallationPath,
+                GameId = AmazonClientlessGames.AmazonGamesSdkId,
+                Name = "Amazon Games SDK",
+                DownloadProperties =
+                {
+                    InstallPath = AmazonClientlessGames.AmazonGamesSdkBaseInstallationPath
+                }
+            };
+            MultiInstallData.Add(sdkInstallTask);
+        }
+
         var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
         foreach (var installData in MultiInstallData.ToList())
         {
@@ -100,7 +116,7 @@ public partial class AmazonClientlessGameInstallerView : UserControl
             downloadSizeNumber += installData.DownloadSizeNumber;
         }
 
-        var games = MultiInstallData;
+        var games = MultiInstallData.Where(i => i.GameId != AmazonClientlessGames.AmazonGamesSdkId).ToList();
         GamesLB.ItemsSource = games;
         if (games.Count > 1 || gamesListShouldBeDisplayed)
         {
@@ -151,7 +167,7 @@ public partial class AmazonClientlessGameInstallerView : UserControl
         }
     }
 
-    public async Task StartTask(DownloadAction downloadAction, bool silently = false)
+    private async Task StartTask(DownloadAction downloadAction, bool silently = false)
     {
         var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
         var userLoggedIn = await clientApi.GetIsUserLoggedIn();
@@ -166,7 +182,7 @@ public partial class AmazonClientlessGameInstallerView : UserControl
             InstallerWindow.Close();
             return;
         }
-        
+
         var installPath = SelectedGamePathTxt.Text;
         if (installPath == "")
         {
@@ -188,6 +204,7 @@ public partial class AmazonClientlessGameInstallerView : UserControl
             {
                 continue;
             }
+
             if (installData.DownloadProperties.InstallPath.IsNullOrEmpty())
             {
                 var folderName = installData.Name;
@@ -196,10 +213,11 @@ public partial class AmazonClientlessGameInstallerView : UserControl
                 {
                     folderName = folderName.Replace(inappropriateDirChar, "");
                 }
+
                 installData.FullInstallPath = Path.Combine(installPath, folderName);
                 installData.DownloadProperties.InstallPath = installPath;
             }
-            
+
             var downloadProperties = GetDownloadProperties(installData, downloadAction);
             installData.DownloadProperties = downloadProperties;
             downloadTasks.Add(installData);
@@ -212,7 +230,7 @@ public partial class AmazonClientlessGameInstallerView : UserControl
         }
     }
 
-    public DownloadProperties GetDownloadProperties(DownloadManagerData.Download installData, DownloadAction downloadAction)
+    private DownloadProperties GetDownloadProperties(DownloadManagerData.Download installData, DownloadAction downloadAction)
     {
         var settings = AmazonClientlessPlugin.GetSettings();
         int maxWorkers = settings.MaxWorkers;
