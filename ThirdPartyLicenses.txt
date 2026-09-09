@@ -39,12 +39,13 @@ License: MIT (dual-licensed MIT / Apache 2.0)
 Copyright 2021 Daniel Fath
 
 ----------------------------------------------------------------------------------------
-CommunityToolkit.Mvvm - https://github.com/CommunityToolkit/dotnet
+LightProto - https://github.com/dameng324/LightProto
 MIT License (MIT)
-Copyright © .NET Foundation and Contributors
-All rights reserved.
+Copyright (c) 2025 Dameng
 
 ----------------------------------------------------------------------------------------
 SQLNadoAot - https://github.com/smourier/SQLNadoAot
 MIT License
 Copyright (c) 2026 Simon Mourier
+
+----------------------------------------------------------------------------------------
