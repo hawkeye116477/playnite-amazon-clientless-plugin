@@ -385,8 +385,10 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                 {
                     File.Delete(installedManifestFile);
                 }
-
-                Directory.CreateDirectory(installedManifestPath);
+                
+                var installedManifestDirectoryInfo = Directory.CreateDirectory(installedManifestPath); 
+                installedManifestDirectoryInfo.Attributes = FileAttributes.Directory | FileAttributes.Hidden; 
+                
                 await File.WriteAllTextAsync(installedManifestFile, originalManifestJson, linkedCts.Token);
 
                 if (downloadTask.GameId != AmazonClientlessGames.AmazonGamesSdkId)
@@ -547,6 +549,11 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                                     {
                                         Interlocked.Add(ref totalDiskBytes, bytesRead);
                                         await finalFileFs.WriteAsync(buffer.AsMemory(0, bytesRead), token).ConfigureAwait(false);
+                                    }
+                                    
+                                    if (file.Hidden == true)
+                                    {
+                                        File.SetAttributes(filePath, FileAttributes.Hidden);
                                     }
                                 })
                                .ConfigureAwait(false);
