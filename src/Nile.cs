@@ -5,9 +5,9 @@ using PlayniteMod;
 
 namespace AmazonClientless;
 
-public class AmazonClientlessLauncher
+public class Nile
 {
-    private static string NileConfigPath
+    private static string ConfigPath
     {
         get
         {
@@ -41,9 +41,9 @@ public class AmazonClientlessLauncher
         }
     }
 
-    public static List<InstalledGamesWrapper.Installed> GetNileInstalledAppList()
+    public static List<InstalledGamesWrapper.Installed> GetInstalledAppList()
     {
-        var installListPath = Path.Combine(NileConfigPath, "installed.json");
+        var installListPath = Path.Combine(ConfigPath, "installed.json");
         var list = new List<InstalledGamesWrapper.Installed>();
         if (File.Exists(installListPath))
         {
@@ -69,7 +69,7 @@ public class AmazonClientlessLauncher
             installLocation = Paths.FixSeparators(installLocation);
             app.Path = installLocation;
             var gameName = new DirectoryInfo(installLocation).Name;
-            var nileLibSyncJsonPath = Path.Combine(NileConfigPath, "library.json");
+            var nileLibSyncJsonPath = Path.Combine(ConfigPath, "library.json");
             if (File.Exists(nileLibSyncJsonPath))
             {
                 var nileLibyncJsonContent = FileSystem.ReadFileAsStringSafe(nileLibSyncJsonPath);

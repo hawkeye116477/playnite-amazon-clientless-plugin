@@ -136,7 +136,7 @@ public class AmazonClientlessGames
             games.TryAdd(installedGame.Key, installedGame.Value);
         }
         
-        var nileAppList = AmazonClientlessLauncher.GetNileInstalledAppList();
+        var nileAppList = Nile.GetInstalledAppList();
         foreach (var installedGame in nileAppList)
         {
             installedGame.Name = NormalizeGameTitle(installedGame.Name);
