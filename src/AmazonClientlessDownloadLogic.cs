@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Windows;
 using AmazonClientless.Models;
 using AmazonClientless.Services;
@@ -529,7 +530,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                                 resumeStartByte = new FileInfo(filePath).Length;
                                 if (resumeStartByte < file.Size)
                                 {
-                                    request.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(resumeStartByte, file.Size - 1);
+                                    request.Headers.Range = new RangeHeaderValue(resumeStartByte, file.Size - 1);
                                 }
                             }
 

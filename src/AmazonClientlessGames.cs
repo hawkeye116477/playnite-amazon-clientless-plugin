@@ -16,7 +16,7 @@ public class AmazonClientlessGames
     public const string AmazonGamesSdkId = "amazon-games-sdk";
     public static readonly string AmazonGamesSdkBaseInstallationPath = AmazonClientlessPlugin.PlayniteApi.UserDataDir;
     public static readonly string AmazonGamesSdkInstallationPath = Path.Combine(AmazonGamesSdkBaseInstallationPath, "Amazon Games SDK");
-    
+
     public static string InstallationPath
     {
         get
@@ -135,14 +135,14 @@ public class AmazonClientlessGames
             installedGame.Value.Name = NormalizeGameTitle(installedGame.Value.Name);
             games.TryAdd(installedGame.Key, installedGame.Value);
         }
-        
+
         var nileAppList = Nile.GetInstalledAppList();
         foreach (var installedGame in nileAppList)
         {
             installedGame.Name = NormalizeGameTitle(installedGame.Name);
             games.TryAdd(installedGame.ID, installedGame);
         }
-        
+
 
         // Add games installed using Amazon Games Launcher
         var amazonInstallSqlPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),

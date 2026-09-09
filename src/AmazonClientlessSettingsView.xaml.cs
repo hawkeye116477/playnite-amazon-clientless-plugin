@@ -8,6 +8,7 @@ using CommonPlugin.Enums;
 using Linguini.Shared.Types.Bundle;
 using Playnite;
 using PlayniteMod;
+using MessageBoxResult = Playnite.MessageBoxResult;
 
 namespace AmazonClientless
 {
@@ -83,7 +84,7 @@ namespace AmazonClientless
                 var answer = await AmazonClientlessPlugin.PlayniteApi.Dialogs.ShowMessageAsync(
                     LocalizationManager.Instance.GetString(LOC.CommonSignOutConfirm),
                     LocalizationManager.Instance.GetString(LOC.CommonSignOut), MessageBoxButtons.YesNo);
-                if (answer == Playnite.MessageBoxResult.Yes)
+                if (answer == MessageBoxResult.Yes)
                 {
                     await clientApi.LogOut();
                     await UpdateAuthStatus();
@@ -124,7 +125,7 @@ namespace AmazonClientless
                 LocalizationManager.Instance.GetString(LOC.CommonClearCacheConfirm),
                 LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteSettingsClearCacheTitle),
                 MessageBoxButtons.YesNo, MessageBoxSeverity.Question);
-            if (result == Playnite.MessageBoxResult.Yes)
+            if (result == MessageBoxResult.Yes)
             {
                 AmazonClientlessGames.ClearCache();
             }
@@ -159,7 +160,7 @@ namespace AmazonClientless
             var troubleshootingJson = Serialization.ToJson(troubleshootingInformationTxt, true);
             Clipboard.SetText(troubleshootingJson);
         }
-        
+
 
         private async void AmazonClientlessSettingsView_OnInitialized(object? sender, EventArgs e)
         {

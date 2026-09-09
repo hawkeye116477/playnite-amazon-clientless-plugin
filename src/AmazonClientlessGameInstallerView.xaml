@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:AmazonClientless"
              xmlns:common="clr-namespace:CommonPlugin" xmlns:system="clr-namespace:System"
              xmlns:res="clr-namespace:CommonPlugin.Resources"
              mc:Ignorable="d"
@@ -78,13 +77,13 @@
                         Text={common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteInstallGame}}}"
                         FontFamily="{DynamicResource IcoFont}" HorizontalAlignment="Right"
                         VerticalAlignment="Bottom" Margin="0,0,8,0"
-                        IsEnabled="False" Click="InstallBtn_OnClick"/>
+                        IsEnabled="False" Click="InstallBtn_OnClick" />
                 <Button x:Name="ReloadBtn"
                         Content="{common:Icon 
                         Code={x:Static res:CommonIcons.Reload},
                         Text={common:Localize Key={x:Static system:LOC.CommonReload}}}"
                         FontFamily="{DynamicResource IcoFont}" HorizontalAlignment="Right"
-                        VerticalAlignment="Bottom" Margin="0,0,8,0" IsEnabled="False" Click="ReloadBtn_OnClick"/>
+                        VerticalAlignment="Bottom" Margin="0,0,8,0" IsEnabled="False" Click="ReloadBtn_OnClick" />
                 <Button x:Name="CancelBtn"
                         Content="{common:Icon 
                         Code={x:Static res:CommonIcons.Cancel},
@@ -100,8 +99,8 @@
                 <Button DockPanel.Dock="Right" Padding="5" Margin="5 0 0 0"
                         Content="{common:Icon Code={x:Static res:CommonIcons.SelectFolder}}"
                         Name="ChooseGamePathBtn" FontFamily="{DynamicResource IcoFont}"
-                        ToolTip="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSelectDirectoryTooltip}}" 
-                        Click="ChooseGamePathBtn_OnClick"/>
+                        ToolTip="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSelectDirectoryTooltip}}"
+                        Click="ChooseGamePathBtn_OnClick" />
                 <TextBox Name="SelectedGamePathTxt" Text="" VerticalAlignment="Center" Margin="0" />
             </DockPanel>
             <Border BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="GamesBrd"

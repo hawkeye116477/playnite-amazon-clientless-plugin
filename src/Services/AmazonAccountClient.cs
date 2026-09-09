@@ -433,7 +433,7 @@ public class AmazonAccountClient(IPlayniteApi api)
 
         return entitlement;
     }
-    
+
     public async Task<GameDownloadManifest> GetGameDownload(string productId, string productTitle)
     {
         if (!await GetIsUserLoggedIn())
@@ -507,7 +507,7 @@ public class AmazonAccountClient(IPlayniteApi api)
         }
         catch (Exception ex)
         {
-            logger.Error(ex, $"Failed to get SdkDownload manifest");
+            logger.Error(ex, "Failed to get SdkDownload manifest");
         }
 
         return manifest;

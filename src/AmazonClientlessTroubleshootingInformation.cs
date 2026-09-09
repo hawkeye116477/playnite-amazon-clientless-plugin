@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Reflection;
+
 namespace AmazonClientless;
 
 public static class AmazonClientlessTroubleshootingInformation
@@ -8,8 +11,8 @@ public static class AmazonClientlessTroubleshootingInformation
     {
         get
         {
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            var fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+            var assembly = Assembly.GetExecutingAssembly();
+            var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             return fvi.ProductVersion;
         }
     }

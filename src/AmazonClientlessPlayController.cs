@@ -137,14 +137,20 @@ public class AmazonClientlessPlayController(Game game) : PlayController(game.Lib
                     await GameStoppedAsync(new GameStoppedArgs(0));
                     return;
                 }
-                var installedSdkManifestFile = Path.Combine(AmazonClientlessGames.AmazonGamesSdkInstallationPath, ".manifest_ac", "manifest.json");
+
+                var installedSdkManifestFile =
+                    Path.Combine(AmazonClientlessGames.AmazonGamesSdkInstallationPath, ".manifest_ac", "manifest.json");
                 if (!File.Exists(installedSdkManifestFile))
                 {
-                    logger.Warn($"Amazon Games SDK manifest file isn't available at {installedSdkManifestFile}, so most likely SDK isn't installed." +
-                                $"If game doesn't launch, then you need to reinstall this game or install other one to trigger downloading SDK.");
+                    logger.Warn(
+                        $"Amazon Games SDK manifest file isn't available at {installedSdkManifestFile}, so most likely SDK isn't installed." +
+                        $"If game doesn't launch, then you need to reinstall this game or install other one to trigger downloading SDK.");
                 }
-                cmd.Environment.Add("FUEL_DIR", Path.Combine(AmazonClientlessGames.AmazonGamesSdkInstallationPath, "Amazon Games Services", "Legacy"));
-                cmd.Environment.Add("AMAZON_GAMES_SDK_PATH", Path.Combine(AmazonClientlessGames.AmazonGamesSdkInstallationPath, "Amazon Games Services"));
+
+                cmd.Environment.Add("FUEL_DIR",
+                    Path.Combine(AmazonClientlessGames.AmazonGamesSdkInstallationPath, "Amazon Games Services", "Legacy"));
+                cmd.Environment.Add("AMAZON_GAMES_SDK_PATH",
+                    Path.Combine(AmazonClientlessGames.AmazonGamesSdkInstallationPath, "Amazon Games Services"));
                 var entitlement = await clientApi.GetEntitlement(game.LibraryGameId!);
                 if (entitlement != null)
                 {
@@ -155,6 +161,7 @@ public class AmazonClientlessPlayController(Game game) : PlayController(game.Lib
                         cmd.Environment.Add("AMAZON_GAMES_FUEL_PRODUCT_SKU", productSku);
                     }
                 }
+
                 cmd.Environment.Add("AMAZON_GAMES_FUEL_DISPLAY_NAME", clientApi.GetUsername());
             }
 

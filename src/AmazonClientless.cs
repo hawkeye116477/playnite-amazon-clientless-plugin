@@ -153,7 +153,8 @@ public class AmazonClientlessPlugin : Plugin
                 {
                     menuItems.Add(new MenuItemImpl(
                         LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteInstallGame),
-                        _ => { AmazonClientlessGameMenuActions.OpenInstallerWindow(notInstalledPluginGames); }, icon: CommonIcons.InstallIcon
+                        _ => { AmazonClientlessGameMenuActions.OpenInstallerWindow(notInstalledPluginGames); },
+                        icon: CommonIcons.InstallIcon
                     ));
                 }
             }
@@ -313,12 +314,12 @@ public class AmazonClientlessPlugin : Plugin
             UnifiedDownloadManagerApi = udmApi;
         }
     }
-    
+
     public override async Task<object?> OnPluginCallRequestAsync(PluginCallRequestAsyncArgs args)
     {
         return args.CallId == UnifiedDownloadManagerSharedProperties.GetDownloadLogic ? UnifiedDownloadLogic : null;
     }
-    
+
     public void SavePluginSettings(AmazonClientlessPluginSettings settings)
     {
         var settingsFile = Path.Combine(PlayniteApi.UserDataDir, "settings.json");
@@ -384,7 +385,7 @@ public class AmazonClientlessPlugin : Plugin
     {
         return Path.Combine(PlayniteApi.UserDataDir, "cache", dirName);
     }
-    
+
     public override async Task OnApplicationShutdownAsync(OnApplicationShutdownArgs args)
     {
         var settings = GetSettings();

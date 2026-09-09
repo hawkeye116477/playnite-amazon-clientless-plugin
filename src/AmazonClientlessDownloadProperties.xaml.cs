@@ -5,7 +5,6 @@ using AmazonClientless.Models;
 using CommonPlugin;
 using CommonPlugin.Enums;
 using Playnite;
-using UnifiedDownloadManagerApiNS.Interfaces;
 using UnifiedDownloadManagerApiNS.Models;
 
 namespace AmazonClientless;
@@ -42,8 +41,8 @@ public partial class AmazonClientlessDownloadProperties : UserControl
         {
             InstallPathDP.IsEnabled = false;
         }
-        
-        var unifiedDownloadManagerApi = AmazonClientlessPlugin.Instance.UnifiedDownloadManagerApi;;
+
+        var unifiedDownloadManagerApi = AmazonClientlessPlugin.Instance.UnifiedDownloadManagerApi;
         var wantedItem = unifiedDownloadManagerApi.GetTask(SelectedDownload.GameId, AmazonClientlessPlugin.Id);
         if (wantedItem?.Status is UnifiedDownloadStatus.Completed or UnifiedDownloadStatus.Running)
         {
