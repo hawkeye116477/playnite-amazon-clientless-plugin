@@ -845,7 +845,6 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                 Name = downloadTask.Name,
                 PluginId = AmazonClientlessPlugin.Id,
                 SourceName = "Amazon Games",
-                AddedTime = downloadTask.AddedTime,
                 DownloadSizeBytes = downloadTask.DownloadSizeNumber,
                 InstallSizeBytes = downloadTask.DownloadSizeNumber,
                 FullInstallPath = downloadTask.FullInstallPath
