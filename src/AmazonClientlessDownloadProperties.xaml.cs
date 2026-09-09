@@ -36,7 +36,6 @@ public partial class AmazonClientlessDownloadProperties : UserControl
         };
         TaskCBo.ItemsSource = downloadActionOptions;
         UpdateSpaceInfo(SelectedDownload.DownloadProperties.InstallPath);
-        SizeGrd.Visibility = Visibility.Visible;
         if (SelectedDownload.GameId == AmazonClientlessGames.AmazonGamesSdkId)
         {
             InstallPathDP.IsEnabled = false;
@@ -47,6 +46,10 @@ public partial class AmazonClientlessDownloadProperties : UserControl
         if (wantedItem?.Status is UnifiedDownloadStatus.Completed or UnifiedDownloadStatus.Running)
         {
             SaveBtn.IsEnabled = false;
+        }
+        if (wantedItem?.Status != UnifiedDownloadStatus.Completed)
+        {
+            SizeGrd.Visibility = Visibility.Visible;
         }
     }
 
