@@ -54,7 +54,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
         downloadTask.Activity = $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoadingLabel)}";
         downloadTask.Status = UnifiedDownloadStatus.Running;
         var tempReporterCts = CancellationTokenSource.CreateLinkedTokenSource(linkedCts.Token);
-        var tempReporter = Task.Run(async () =>
+        using var tempReporter = Task.Run(async () =>
         {
             while (!tempReporterCts.Token.IsCancellationRequested)
             {
@@ -488,9 +488,9 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
             MaxDegreeOfParallelism = maxParallel,
             CancellationToken = token
         };
-        await Parallel.ForEachAsync(allFiles, parallelOptions, async (file, _) =>
+        await Parallel.ForEachAsync(allFiles, parallelOptions, async (file, ct) =>
         {
-            if (!token.IsCancellationRequested)
+            if (!ct.IsCancellationRequested)
             {
                 if (file.Path != null)
                 {
@@ -508,7 +508,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                     {
                         if (!File.Exists(filePath) || new FileInfo(filePath).Length != 0)
                         {
-                            await File.WriteAllBytesAsync(filePath, Array.Empty<byte>(), token);
+                            await File.WriteAllBytesAsync(filePath, [], ct).ConfigureAwait(false);
                         }
                     }
                     else
@@ -534,10 +534,10 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                                 }
                             }
 
-                            using var response = await Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token)
+                            using var response = await Client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct)
                                                              .ConfigureAwait(false);
                             response.EnsureSuccessStatusCode();
-                            await using var networkStream = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false);
+                            await using var networkStream = await response.Content.ReadAsStreamAsync(ct).ConfigureAwait(false);
                             var fileMode = resumeStartByte > 0 && resumeStartByte < file.Size ? FileMode.Append : FileMode.Create;
                             await RentAndUsePool(bufferSize, async buffer =>
                                 {
@@ -545,12 +545,12 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                                         FileShare.ReadWrite | FileShare.Delete, bufferSize,
                                         FileOptions.Asynchronous | FileOptions.SequentialScan);
                                     int bytesRead;
-                                    while ((bytesRead = await networkStream.ReadAsync(buffer, token)
+                                    while ((bytesRead = await networkStream.ReadAsync(buffer, ct)
                                                                            .ConfigureAwait(false)) >
                                            0)
                                     {
                                         Interlocked.Add(ref totalDiskBytes, bytesRead);
-                                        await finalFileFs.WriteAsync(buffer.AsMemory(0, bytesRead), token).ConfigureAwait(false);
+                                        await finalFileFs.WriteAsync(buffer.AsMemory(0, bytesRead), ct).ConfigureAwait(false);
                                     }
 
                                     if (file.Hidden == true)
