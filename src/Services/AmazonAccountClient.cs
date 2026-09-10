@@ -251,7 +251,14 @@ public class AmazonAccountClient(IPlayniteApi api)
 
         if (!correctJson)
         {
-            entitlements = await GetAccountEntitlements();
+            try
+            {
+                entitlements = await GetAccountEntitlements();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
 
         return entitlements;
@@ -426,6 +433,7 @@ public class AmazonAccountClient(IPlayniteApi api)
         {
             entitlement = entitlements.FirstOrDefault(e => e.Product.ID == productId);
         }
+
         if (entitlement == null)
         {
             logger.Error("Can't get entitlement.");
@@ -447,7 +455,7 @@ public class AmazonAccountClient(IPlayniteApi api)
         {
             return await GetSdkDownload();
         }
-        
+
         var entitlement = await GetEntitlement(productId);
         if (entitlement != null)
         {
@@ -547,7 +555,7 @@ public class AmazonAccountClient(IPlayniteApi api)
                 }
             }
         }
-        
+
         if (!correctJson)
         {
             if (!await GetIsUserLoggedIn())
@@ -556,23 +564,24 @@ public class AmazonAccountClient(IPlayniteApi api)
                 manifest.ErrorDisplayed = true;
                 return manifest;
             }
-            
-            var downloadManifest = await GetGameDownload(productId, productTitle);
-            if (!downloadManifest.DownloadUrl.IsNullOrEmpty())
-            {
-                var uri = new Uri(downloadManifest.DownloadUrl);
-                var uriBuilder = new UriBuilder(uri)
-                {
-                    Path = $"{uri.LocalPath}/manifest.proto",
-                    Query = uri.Query,
-                    Host = uri.Host
-                };
 
-                var finalUrl = uriBuilder.Uri.ToString();
-                var request = new HttpRequestMessage(HttpMethod.Get, finalUrl);
-                request.Headers.Add("User-Agent", LauncherUserAgent);
-                try
+            try
+            {
+                var downloadManifest = await GetGameDownload(productId, productTitle);
+                if (!downloadManifest.DownloadUrl.IsNullOrEmpty())
                 {
+                    var uri = new Uri(downloadManifest.DownloadUrl);
+                    var uriBuilder = new UriBuilder(uri)
+                    {
+                        Path = $"{uri.LocalPath}/manifest.proto",
+                        Query = uri.Query,
+                        Host = uri.Host
+                    };
+
+                    var finalUrl = uriBuilder.Uri.ToString();
+                    var request = new HttpRequestMessage(HttpMethod.Get, finalUrl);
+                    request.Headers.Add("User-Agent", LauncherUserAgent);
+
                     using var response = await HttpClient.SendAsync(request);
                     response.EnsureSuccessStatusCode();
                     var responseBytes = await response.Content.ReadAsByteArrayAsync();
@@ -628,14 +637,15 @@ public class AmazonAccountClient(IPlayniteApi api)
                     Directory.CreateDirectory(cacheDir);
                     await File.WriteAllTextAsync(cacheInfoFile, Serialization.ToJson(manifest));
                 }
-                catch (Exception ex)
+                else
                 {
-                    logger.Error(ex, $"Failed to get GameManifest manifest for {productTitle}");
+                    logger.Error($"Failed to get GameManifest manifest for {productTitle}");
                     manifest.ErrorDisplayed = true;
                 }
             }
-            else
+            catch (Exception ex)
             {
+                logger.Error(ex, $"Failed to get GameManifest manifest for {productTitle}");
                 manifest.ErrorDisplayed = true;
             }
         }

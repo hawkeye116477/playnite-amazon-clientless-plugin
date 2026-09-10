@@ -181,14 +181,6 @@
                                 Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteOpen}}"
                                 VerticalAlignment="Center" Click="OpenGamesInstallationPathBtn_Click" Grid.Column="2"
                                 Grid.Row="6" />
-                        <TextBlock VerticalAlignment="Center" Grid.Column="0" Grid.Row="7" Margin="0,0,10,8"
-                                   Text="{common:Localize Key={x:Static system:LOC.CommonLogFilesPath}}" />
-                        <TextBox x:Name="LogFilesPathTxt" Margin="0,0,0,8" VerticalAlignment="Center" IsReadOnly="True"
-                                 Grid.Column="1" Grid.Row="7" />
-                        <Button x:Name="OpenLogFilesPathBtn" Margin="10,0,0,8"
-                                Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteOpen}}"
-                                VerticalAlignment="Center" Grid.Column="2" Grid.Row="7"
-                                Click="OpenLogFilesPathBtn_Click" />
                         <Button Margin="0,15,8,8" Grid.Column="0" Grid.Row="8" Name="CopyRawDataBtn"
                                 Click="CopyRawDataBtn_Click"
                                 Grid.ColumnSpan="2" HorizontalAlignment="Left"

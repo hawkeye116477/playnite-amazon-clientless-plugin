@@ -132,6 +132,16 @@ public partial class AmazonClientlessGameInstallerView : UserControl
         UpdateAfterInstallingSize();
         DownloadSizeTB.Text = CommonHelpers.FormatSize(downloadSizeNumber);
         InstallSizeTB.Text = CommonHelpers.FormatSize(downloadSizeNumber);
+        if (games.Count == 0 || gamesListShouldBeDisplayed)
+        {
+            await playniteApi.Dialogs.ShowErrorMessageAsync(
+                LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteMetadataDownloadError,
+                    new Dictionary<string, IFluentType>
+                    {
+                        ["var0"] =
+                            (FluentString)LocalizationManager.Instance.GetString(LOC.CommonCheckLog)
+                    }), "");
+        }
     }
 
     private void UpdateSpaceInfo(string path)

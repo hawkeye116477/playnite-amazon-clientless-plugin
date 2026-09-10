@@ -144,11 +144,6 @@ namespace AmazonClientless
             }
         }
 
-        private void OpenLogFilesPathBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ProcessStarter.StartProcess(AmazonClientlessPlugin.PlayniteApi.AppInfo.ConfigurationDirectory);
-        }
-
         private void CopyRawDataBtn_Click(object sender, RoutedEventArgs e)
         {
             var troubleshootingInformationTxt = new
@@ -197,7 +192,6 @@ namespace AmazonClientless
             PlayniteVersionTxt.Text = AmazonClientlessTroubleshootingInformation.PlayniteVersion;
             PluginVersionTxt.Text = AmazonClientlessTroubleshootingInformation.PluginVersion ?? "";
             GamesInstallationPathTxt.Text = AmazonClientlessTroubleshootingInformation.GamesInstallationPath;
-            LogFilesPathTxt.Text = AmazonClientlessPlugin.PlayniteApi.AppInfo.ConfigurationDirectory;
             ReportBugHyp.NavigateUri = new Uri(
                 $"https://github.com/hawkeye116477/playnite-amazon-clientless-plugin/issues/new?assignees=&labels=bug&projects=&template=bugs.yml&pluginV={AmazonClientlessTroubleshootingInformation.PluginVersion}&playniteV={AmazonClientlessTroubleshootingInformation.PlayniteVersion}");
         }
