@@ -274,7 +274,7 @@ public partial class AmazonClientlessGameInstallerView : UserControl
             AfterInstallingTB.Text = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoadingLabel);
 
             var gameIds = MultiInstallData.Select(g => g.GameId).ToList();
-            AmazonClientlessGames.ClearSpecificGamesCache(gameIds);
+            AmazonClientlessCache.ClearSpecificGamesCache(gameIds);
 
             await RefreshAll();
         }

@@ -219,7 +219,7 @@ public class AmazonAccountClient(IPlayniteApi api)
             try
             {
                 var jsonEntitlements = Serialization.ToJson(entitlements);
-                var cacheDir = AmazonClientlessPlugin.GetCachePath("entitlements");
+                var cacheDir = AmazonClientlessCache.GetCachePath("entitlements");
                 FileSystem.WriteStringToFileSafe(Path.Combine(cacheDir, "entitlements.json"), jsonEntitlements);
             }
             catch (Exception ex)
@@ -233,7 +233,7 @@ public class AmazonAccountClient(IPlayniteApi api)
 
     private async Task<List<Entitlement>> GetSavedEntitlements()
     {
-        var filePath = Path.Combine(AmazonClientlessPlugin.GetCachePath("entitlements"), "entitlements.json");
+        var filePath = Path.Combine(AmazonClientlessCache.GetCachePath("entitlements"), "entitlements.json");
         List<Entitlement> entitlements = [];
         bool correctJson = false;
         if (File.Exists(filePath))
@@ -529,7 +529,7 @@ public class AmazonAccountClient(IPlayniteApi api)
 
     public async Task<FullGameManifest> GetGameManifest(string productId, string productTitle, bool forceRefreshCache = false)
     {
-        var cachePath = AmazonClientlessPlugin.GetCachePath("manifest");
+        var cachePath = AmazonClientlessCache.GetCachePath("manifest");
         var cacheInfoFileName = $"{productId}.json";
 
         var cacheInfoFile = Path.Combine(cachePath, cacheInfoFileName);
@@ -633,7 +633,7 @@ public class AmazonAccountClient(IPlayniteApi api)
                     }
 
                     manifest.Version = downloadManifest.VersionId;
-                    var cacheDir = AmazonClientlessPlugin.GetCachePath("manifest");
+                    var cacheDir = AmazonClientlessCache.GetCachePath("manifest");
                     Directory.CreateDirectory(cacheDir);
                     await File.WriteAllTextAsync(cacheInfoFile, Serialization.ToJson(manifest));
                 }
@@ -655,7 +655,7 @@ public class AmazonAccountClient(IPlayniteApi api)
 
     public async Task<LiveVersionIdsResponse> GetLiveVersionIds(List<string> productIds, bool forceRefreshCache = false)
     {
-        var cachePath = AmazonClientlessPlugin.GetCachePath("update");
+        var cachePath = AmazonClientlessCache.GetCachePath("update");
         var cacheInfoFileName = "allGames.json";
         var cacheInfoFile = Path.Combine(cachePath, cacheInfoFileName);
         bool correctJson = false;

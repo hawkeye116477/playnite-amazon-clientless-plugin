@@ -75,11 +75,6 @@ public class AmazonClientlessPlugin : Plugin
         return Instance.Settings;
     }
 
-    public override async ValueTask DisposeAsync()
-    {
-        // If you need to gracefully dispose of some resources on application shutdown, do it here.
-    }
-
     public override async Task<CollectDiagnosticDataArgsAsyncResult?> CollectDiagnosticDataArgsAsync(CollectDiagnosticDataArgs args)
     {
         // Implement this method if you want to gather custom data when user generates diagnostics data for your plugin.
@@ -96,8 +91,7 @@ public class AmazonClientlessPlugin : Plugin
             new MenuItemDescriptor($"gameMenu.{Id}", ShortPluginName),
         ];
     }
-
-    // This will get called every time a menu item is to be loaded in the UI.
+    
     public override ICollection<MenuItemImpl>? GetGameMenuItems(GetGameMenuItemsArgs args)
     {
         var menuItems = new List<MenuItemImpl>();
@@ -217,9 +211,7 @@ public class AmazonClientlessPlugin : Plugin
 
         return menuItems;
     }
-
-    // Implement this if you want to provide custom view and functionality for game edit dialog.
-    // If you want to allow users to change your game data that way.
+    
     public override async Task<GameEditSessionHandler?> GetGameEditHandlerAsync(GetGameEditHandlerArgs args)
     {
         if (args.Games is [{ LibraryId: Id }])
@@ -229,14 +221,12 @@ public class AmazonClientlessPlugin : Plugin
 
         return null;
     }
-
-    // Implement this if you want to provide settings view functionality for your plugin that will be shown on addons views.
+    
     public override async Task<PluginSettingsHandler?> GetSettingsHandlerAsync(GetSettingsHandlerArgs args)
     {
         return new AmazonClientlessSettingsHandler(this);
     }
-
-
+    
     public override async Task<List<ImportableGame>> GetGamesAsync(LibraryGetGamesArgs args)
     {
         var allGames = new List<ImportableGame>();
@@ -305,11 +295,7 @@ public class AmazonClientlessPlugin : Plugin
 
         return allGames;
     }
-
-
-    // This will get called when game is being started. If your plugin knows how to start the game,
-    // because you are a library plugin and you imported this game, or you are just providing alternative
-    // ways of running games, this is where you do it.
+    
     public override async Task<List<PlayController>> GetPlayActionsAsync(GetPlayActionsArgs args)
     {
         if (args.Game.LibraryId != Id)
@@ -339,8 +325,7 @@ public class AmazonClientlessPlugin : Plugin
 
         return [new AmazonClientlessUninstallController(args.Game)];
     }
-
-    // Implement this method if you are implementing metadata provider via MetadataSettings.
+    
     public override async Task<MetadataProvider?> GetMetadataProviderAsync(GetMetadataProviderArgs args)
     {
         return new AmazonClientlessMetadataProvider();
@@ -367,32 +352,7 @@ public class AmazonClientlessPlugin : Plugin
         var settingsFile = Path.Combine(PlayniteApi.UserDataDir, "settings.json");
         FileSystem.WriteStringToFile(settingsFile, Serialization.ToJson(settings, true));
     }
-
-    public static long GetNextClearingTime(ClearCacheTime frequency)
-    {
-        DateTimeOffset? clearingTime = null;
-        DateTimeOffset now = DateTime.UtcNow;
-        switch (frequency)
-        {
-            case ClearCacheTime.Day:
-                clearingTime = now.AddDays(1);
-                break;
-            case ClearCacheTime.Week:
-                clearingTime = now.AddDays(7);
-                break;
-            case ClearCacheTime.Month:
-                clearingTime = now.AddMonths(1);
-                break;
-            case ClearCacheTime.ThreeMonths:
-                clearingTime = now.AddMonths(3);
-                break;
-            case ClearCacheTime.SixMonths:
-                clearingTime = now.AddMonths(6);
-                break;
-        }
-
-        return clearingTime?.ToUnixTimeSeconds() ?? 0;
-    }
+    
 
     public static long GetNextUpdateCheckTime(UpdatePolicy frequency)
     {
@@ -421,11 +381,6 @@ public class AmazonClientlessPlugin : Plugin
         }
 
         return updateTime?.ToUnixTimeSeconds() ?? 0;
-    }
-
-    public static string GetCachePath(string dirName)
-    {
-        return Path.Combine(PlayniteApi.UserDataDir, "cache", dirName);
     }
 
     public override async Task OnApplicationStartupAsync(OnApplicationStartupArgs args)
@@ -498,14 +453,14 @@ public class AmazonClientlessPlugin : Plugin
                 DateTimeOffset now = DateTime.UtcNow;
                 if (now.ToUnixTimeSeconds() >= nextClearingTime)
                 {
-                    AmazonClientlessGames.ClearCache();
-                    settings.NextClearingTime = GetNextClearingTime(settings.AutoClearCache);
+                    AmazonClientlessCache.ClearCache();
+                    settings.NextClearingTime = AmazonClientlessCache.GetNextClearingTime(settings.AutoClearCache);
                     SavePluginSettings(settings);
                 }
             }
             else
             {
-                settings.NextClearingTime = GetNextClearingTime(settings.AutoClearCache);
+                settings.NextClearingTime = AmazonClientlessCache.GetNextClearingTime(settings.AutoClearCache);
                 SavePluginSettings(settings);
             }
         }

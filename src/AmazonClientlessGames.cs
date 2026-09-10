@@ -216,46 +216,6 @@ public class AmazonClientlessGames
         return games;
     }
 
-    internal static void ClearCache()
-    {
-        var dataDir = AmazonClientlessPlugin.PlayniteApi.UserDataDir;
-        var cacheDir = Path.Combine(dataDir, "cache");
-        if (Directory.Exists(cacheDir))
-        {
-            Directory.Delete(cacheDir, true);
-        }
-    }
-
-    public static void ClearSpecificGamesCache(List<string> gameIds)
-    {
-        var cacheDirs = new List<string>
-        {
-            AmazonClientlessPlugin.GetCachePath("manifest"),
-            AmazonClientlessPlugin.GetCachePath("update"),
-        };
-
-        foreach (var cacheDir in cacheDirs)
-        {
-            if (Directory.Exists(cacheDir))
-            {
-                foreach (var file in Directory.EnumerateFiles(cacheDir, "*", SearchOption.AllDirectories))
-                {
-                    try
-                    {
-                        if (gameIds.Any(gameId => file.Contains(gameId)))
-                        {
-                            File.Delete(file);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(ex, $"An error occured during removing {file} file");
-                    }
-                }
-            }
-        }
-    }
-
     public static async Task<double> CalculateGameSize(string gameId, string gameTitle, bool forceRefreshCache = false)
     {
         var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);

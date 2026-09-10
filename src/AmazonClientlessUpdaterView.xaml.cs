@@ -63,7 +63,7 @@ public partial class AmazonClientlessUpdaterView : UserControl
                         { IsIndeterminate = true };
                 await playniteApi.Dialogs.ShowAsyncBlockingProgressAsync(updateCheckProgressOptions, async a =>
                 {
-                    AmazonClientlessGames.ClearSpecificGamesCache(checkedGamesIds);
+                    AmazonClientlessCache.ClearSpecificGamesCache(checkedGamesIds);
                     var legendaryUpdateController = new AmazonClientlessUpdateController();
                     if (checkedGamesIds.Count > 1)
                     {

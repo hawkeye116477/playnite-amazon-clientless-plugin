@@ -127,7 +127,7 @@ namespace AmazonClientless
                 MessageBoxButtons.YesNo, MessageBoxSeverity.Question);
             if (result == MessageBoxResult.Yes)
             {
-                AmazonClientlessGames.ClearCache();
+                AmazonClientlessCache.ClearCache();
             }
         }
 

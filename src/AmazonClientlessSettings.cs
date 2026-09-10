@@ -90,7 +90,7 @@ public partial class AmazonClientlessSettingsHandler(AmazonClientlessPlugin plug
         {
             if (Settings.AutoClearCache != ClearCacheTime.Never)
             {
-                Settings.NextClearingTime = AmazonClientlessPlugin.GetNextClearingTime(Settings.AutoClearCache);
+                Settings.NextClearingTime = AmazonClientlessCache.GetNextClearingTime(Settings.AutoClearCache);
             }
             else
             {
@@ -112,12 +112,5 @@ public partial class AmazonClientlessSettingsHandler(AmazonClientlessPlugin plug
 
         plugin.Settings = Settings;
         plugin.SavePluginSettings(Settings);
-    }
-
-    public override async Task<ICollection<string>> VerifySettingsAsync(VerifySettingsArgs args)
-    {
-        // This is executed when saving changes. You can do verification on current state
-        // and if you detect some incorrect settings, you can report it here to the user.
-        return [];
     }
 }
