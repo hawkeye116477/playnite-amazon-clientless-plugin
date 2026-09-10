@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Sds;
 
 namespace AmazonClientless.Models;
@@ -6,6 +7,8 @@ public class FullGameManifest
 {
     public List<GameFile> AllFiles { get; set; } = [];
     public ManifestHeader ManifestHeader { get; set; } = new();
+    
+    [field: JsonIgnore]
     public bool ErrorDisplayed { get; set; } = false;
     public string? Version { get; set; } = "0";
 

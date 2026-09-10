@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows;
 using AmazonClientless.Enums;
 using AmazonClientless.Models;
 using CommonPlugin;
@@ -63,8 +64,8 @@ public class AmazonClientlessPlugin : Plugin
         {
             { "launcherName", (FluentString)ShortPluginName },
             { "pluginShortName", (FluentString)ShortPluginName },
-            { "originalPluginShortName", (FluentString)"Amazon" },
-            { "updatesSourceName", (FluentString)"Amazon" }
+            { "originalPluginShortName", (FluentString)"Amazon Games" },
+            { "updatesSourceName", (FluentString)"Amazon Games" }
         };
         LocalizationManager.Instance.SetCommonArgs(commonFluentArgs);
     }
@@ -139,11 +140,14 @@ public class AmazonClientlessPlugin : Plugin
                     _ => { AmazonClientlessGameMenuActions.OpenRepairWindow(installedPluginGames); },
                     icon: CommonIcons.RepairIcon
                 ));
-                menuItems.Add(new MenuItemImpl(
-                    LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteCheckForUpdates),
-                    async _ => { await AmazonClientlessGameMenuActions.OpenCheckForGamesUpdatesWindow(); },
-                    icon: CommonIcons.UpdateIcon
-                ));
+                if (pluginGames.Count == 1)
+                {
+                    menuItems.Add(new MenuItemImpl(
+                        LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteCheckForUpdates),
+                        async _ => { await AmazonClientlessGameMenuActions.OpenCheckForGamesUpdatesWindow(installedPluginGames[0]); },
+                        icon: CommonIcons.UpdateIcon
+                    ));
+                }
             }
             else
             {
@@ -164,16 +168,54 @@ public class AmazonClientlessPlugin : Plugin
         return menuItems;
     }
 
-    // AppMenu works exactly the same as GameMenu related methods.
-    // Use can use this to add new items to the main menu and tray menu.
     public override ICollection<MenuItemDescriptor>? GetAppMenuItemDescriptors(GetAppMenuItemDescriptorsArgs args)
     {
-        return [];
+        return
+        [
+            new MenuItemDescriptor($"appMenu.{Id}.Items", ShortPluginName),
+        ];
     }
 
-    public override ICollection<MenuItemImpl>? GetAppMenuItems(GetAppMenuItemsArgs args)
+    public override ICollection<MenuItemImpl> GetAppMenuItems(GetAppMenuItemsArgs args)
     {
-        return null;
+        var menuItems = new List<MenuItemImpl>();
+        var childMenuItems = new List<MenuItemImpl>();
+        if (args.ItemId == $"appMenu.{Id}.Items")
+        {
+            childMenuItems.Add(new MenuItemImpl(LocalizationManager.Instance.GetString(LOC.CommonCheckForGamesUpdatesButton),
+                async _ =>
+                {
+                    var gamesUpdates = new Dictionary<string, UpdateInfo>();
+                    var legendaryUpdateController = new AmazonClientlessUpdateController();
+                    var updateCheckProgressOptions =
+                        new GlobalProgressOptions(
+                                LocalizationManager.Instance.GetString(LOC.CommonCheckingForUpdates),
+                                false)
+                            { IsIndeterminate = true };
+                    await PlayniteApi.Dialogs.ShowAsyncBlockingProgressAsync(updateCheckProgressOptions,
+                        async _ => { gamesUpdates = await legendaryUpdateController.CheckAllGamesUpdates(); }
+                    );
+
+                    var window = PlayniteApi.CreateWindow(new WindowCreationOptions
+                    {
+                        ShowMaximizeButton = false
+                    });
+                    window.DataContext = gamesUpdates;
+                    window.Title =
+                        $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExtensionsUpdates)}";
+                    window.Content = new AmazonClientlessUpdaterView();
+                    window.Owner = PlayniteApi.GetLastActiveWindow();
+                    window.SizeToContent = SizeToContent.WidthAndHeight;
+                    window.MinWidth = 600;
+                    window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    window.ShowDialog();
+                },
+                icon: CommonIcons.UpdateIcon
+            ));
+            menuItems.Add(new MenuItemImpl(ShortPluginName, childMenuItems));
+        }
+
+        return menuItems;
     }
 
     // Implement this if you want to provide custom view and functionality for game edit dialog.
@@ -384,6 +426,65 @@ public class AmazonClientlessPlugin : Plugin
     public static string GetCachePath(string dirName)
     {
         return Path.Combine(PlayniteApi.UserDataDir, "cache", dirName);
+    }
+
+    public override async Task OnApplicationStartupAsync(OnApplicationStartupArgs args)
+    {
+        var globalSettings = GetSettings();
+        if (globalSettings.GamesUpdatePolicy != UpdatePolicy.Never)
+        {
+            var nextGamesUpdateTime = globalSettings.NextGamesUpdateTime;
+            var udmInstalled = PlayniteApi.Addons.Plugins.Any(plugin =>
+                plugin.Id.Equals(UnifiedDownloadManagerSharedProperties.Id));
+            if (nextGamesUpdateTime != 0 && udmInstalled)
+            {
+                DateTimeOffset now = DateTime.UtcNow;
+                if (now.ToUnixTimeSeconds() >= nextGamesUpdateTime)
+                {
+                    globalSettings.NextGamesUpdateTime =
+                        GetNextUpdateCheckTime(globalSettings.GamesUpdatePolicy);
+                    SavePluginSettings(globalSettings);
+                    var pluginUpdateController = new AmazonClientlessUpdateController();
+                    var gamesUpdates = await pluginUpdateController.CheckAllGamesUpdates(true);
+                    if (gamesUpdates.Count > 0)
+                    {
+                        var successUpdates = gamesUpdates.Where(i => i.Value.Status == UpdateStatus.Available)
+                                                         .ToDictionary(i => i.Key, i => i.Value);
+                        if (successUpdates.Count > 0)
+                        {
+                            if (globalSettings.AutoUpdateGames)
+                            {
+                                await pluginUpdateController.UpdateGame(successUpdates, "", true);
+                            }
+                            else
+                            {
+                                var window = PlayniteApi.CreateWindow(new WindowCreationOptions
+                                {
+                                    ShowMaximizeButton = false
+                                });
+                                window.DataContext = successUpdates;
+                                window.Title =
+                                    $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExtensionsUpdates)}";
+                                window.Content = new AmazonClientlessUpdateController();
+                                window.Owner = PlayniteApi.GetLastActiveWindow();
+                                window.SizeToContent = SizeToContent.WidthAndHeight;
+                                window.MinWidth = 600;
+                                window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                                window.ShowDialog();
+                            }
+                        }
+                        else if (gamesUpdates.Any(i => i.Value.Status == UpdateStatus.Error))
+                        {
+                            PlayniteApi.Notifications.Add(new NotificationMessage(
+                                "LegendaryGamesUpdateCheckFail",
+                                $"{LibraryName} {Environment.NewLine}{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUpdateCheckFailMessage)}",
+                                NotificationSeverity.Error));
+                            Logger.Error("Failed to check for games updates");
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public override async Task OnApplicationShutdownAsync(OnApplicationShutdownArgs args)

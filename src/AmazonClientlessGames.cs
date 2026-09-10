@@ -255,4 +255,20 @@ public class AmazonClientlessGames
             }
         }
     }
+
+    public static async Task<double> CalculateGameSize(string gameId, string gameTitle, bool forceRefreshCache = false)
+    {
+        var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
+        var manifest = await clientApi.GetGameManifest(gameId, gameTitle, forceRefreshCache);
+        double downloadSizeNumber = 0;
+        foreach (var file in manifest.AllFiles)
+        {
+            if (file.Size != null)
+            {
+                downloadSizeNumber += (double)file.Size;
+            }
+        }
+
+        return downloadSizeNumber;
+    }
 }

@@ -426,7 +426,7 @@ public class AmazonAccountClient(IPlayniteApi api)
         {
             entitlement = entitlements.FirstOrDefault(e => e.Product.ID == productId);
         }
-        else
+        if (entitlement == null)
         {
             logger.Error("Can't get entitlement.");
         }
@@ -436,51 +436,56 @@ public class AmazonAccountClient(IPlayniteApi api)
 
     public async Task<GameDownloadManifest> GetGameDownload(string productId, string productTitle)
     {
+        var manifest = new GameDownloadManifest();
         if (!await GetIsUserLoggedIn())
         {
-            throw new Exception("User is not authenticated.");
+            logger.Error("User is not authenticated.");
+            return manifest;
         }
 
         if (productId == AmazonClientlessGames.AmazonGamesSdkId)
         {
             return await GetSdkDownload();
         }
-
+        
         var entitlement = await GetEntitlement(productId);
-        var entitlementId = entitlement?.ID;
-        var manifest = new GameDownloadManifest();
-        var requestData = new
+        if (entitlement != null)
         {
-            Operation = "GetGameDownload",
-            EntitlementId = entitlementId
-        };
-        var stringContent = new StringContent(Serialization.ToJson(requestData, true), Encoding.UTF8, "application/json");
-        stringContent.Headers.ContentEncoding.Add("amz-1.0");
-        var request = new HttpRequestMessage(HttpMethod.Post, @"https://gaming.amazon.com/api/distribution/v2/public")
-        {
-            Content = stringContent
-        };
-        request.Headers.Add("User-Agent", LauncherUserAgent);
-        var tokens = LoadTokens();
-        request.Headers.Add("x-amzn-token", tokens?.Tokens.Bearer.Access_token);
-        request.Headers.Add("X-Amz-Target",
-            "com.amazon.animusdistributionservice.external.AnimusDistributionService.GetGameDownload");
-        try
-        {
-            using var response = await HttpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            var responseContent = await response.Content.ReadAsStringAsync();
-            if (!responseContent.IsNullOrEmpty() && Serialization.TryFromJson(responseContent, out GameDownloadManifest? newManifest))
+            var entitlementId = entitlement.ID;
+
+            var requestData = new
             {
-                if (newManifest != null)
+                Operation = "GetGameDownload",
+                EntitlementId = entitlementId
+            };
+            var stringContent = new StringContent(Serialization.ToJson(requestData, true), Encoding.UTF8, "application/json");
+            stringContent.Headers.ContentEncoding.Add("amz-1.0");
+            var request = new HttpRequestMessage(HttpMethod.Post, @"https://gaming.amazon.com/api/distribution/v2/public")
+            {
+                Content = stringContent
+            };
+            request.Headers.Add("User-Agent", LauncherUserAgent);
+            var tokens = LoadTokens();
+            request.Headers.Add("x-amzn-token", tokens?.Tokens.Bearer.Access_token);
+            request.Headers.Add("X-Amz-Target",
+                "com.amazon.animusdistributionservice.external.AnimusDistributionService.GetGameDownload");
+            try
+            {
+                using var response = await HttpClient.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var responseContent = await response.Content.ReadAsStringAsync();
+                if (!responseContent.IsNullOrEmpty() && Serialization.TryFromJson(responseContent, out GameDownloadManifest? newManifest))
                 {
-                    manifest = newManifest;
+                    if (newManifest != null)
+                    {
+                        manifest = newManifest;
+                    }
                 }
             }
-        }
-        catch (Exception ex)
-        {
-            logger.Error(ex, $"Failed to get GameDownload manifest for {productTitle}");
+            catch (Exception ex)
+            {
+                logger.Error(ex, $"Failed to get GameDownload manifest for {productTitle}");
+            }
         }
 
         return manifest;
@@ -542,14 +547,16 @@ public class AmazonAccountClient(IPlayniteApi api)
                 }
             }
         }
-
+        
         if (!correctJson)
         {
             if (!await GetIsUserLoggedIn())
             {
-                throw new Exception("User is not authenticated.");
+                logger.Error("User is not authenticated.");
+                manifest.ErrorDisplayed = true;
+                return manifest;
             }
-
+            
             var downloadManifest = await GetGameDownload(productId, productTitle);
             if (!downloadManifest.DownloadUrl.IsNullOrEmpty())
             {
@@ -626,6 +633,98 @@ public class AmazonAccountClient(IPlayniteApi api)
                     logger.Error(ex, $"Failed to get GameManifest manifest for {productTitle}");
                     manifest.ErrorDisplayed = true;
                 }
+            }
+            else
+            {
+                manifest.ErrorDisplayed = true;
+            }
+        }
+
+        return manifest;
+    }
+
+    public async Task<LiveVersionIdsResponse> GetLiveVersionIds(List<string> productIds, bool forceRefreshCache = false)
+    {
+        var cachePath = AmazonClientlessPlugin.GetCachePath("update");
+        var cacheInfoFileName = "allGames.json";
+        var cacheInfoFile = Path.Combine(cachePath, cacheInfoFileName);
+        bool correctJson = false;
+        if (File.Exists(cacheInfoFile))
+        {
+            if (File.GetLastWriteTime(cacheInfoFile) < DateTime.Now.AddDays(-7) || forceRefreshCache)
+            {
+                File.Delete(cacheInfoFile);
+            }
+        }
+
+        var manifest = new LiveVersionIdsResponse();
+        if (File.Exists(cacheInfoFile))
+        {
+            var content = await File.ReadAllTextAsync(cacheInfoFile);
+            if (!string.IsNullOrWhiteSpace(content) && Serialization.TryFromJson(content, out LiveVersionIdsResponse? newManifest))
+            {
+                if (newManifest != null)
+                {
+                    correctJson = true;
+                    foreach (var productId in productIds)
+                    {
+                        if (!newManifest.AdgProductIdToVersionIdMap.ContainsKey(productId))
+                        {
+                            correctJson = false;
+                        }
+                    }
+
+                    if (correctJson)
+                    {
+                        manifest = newManifest;
+                    }
+                }
+            }
+        }
+
+        if (!correctJson)
+        {
+            if (!await GetIsUserLoggedIn())
+            {
+                logger.Error("User is not authenticated.");
+                return manifest;
+            }
+
+            var requestData = new
+            {
+                Operation = "GetLiveVersionIds",
+                adgProductIds = productIds
+            };
+            var stringContent = new StringContent(Serialization.ToJson(requestData, true), Encoding.UTF8, "application/json");
+            stringContent.Headers.ContentEncoding.Add("amz-1.0");
+            var request = new HttpRequestMessage(HttpMethod.Post, @"https://gaming.amazon.com/api/distribution/v2/public")
+            {
+                Content = stringContent
+            };
+            request.Headers.Add("User-Agent", LauncherUserAgent);
+            var tokens = LoadTokens();
+            request.Headers.Add("x-amzn-token", tokens?.Tokens.Bearer.Access_token);
+            request.Headers.Add("X-Amz-Target",
+                "com.amazon.animusdistributionservice.external.AnimusDistributionService.GetLiveVersionIds");
+
+            try
+            {
+                using var response = await HttpClient.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var responseContent = await response.Content.ReadAsStringAsync();
+                if (!responseContent.IsNullOrEmpty() && Serialization.TryFromJson(responseContent, out LiveVersionIdsResponse? newManifest))
+                {
+                    if (newManifest != null)
+                    {
+                        manifest = newManifest;
+                        Directory.CreateDirectory(cachePath);
+                        await File.WriteAllTextAsync(cacheInfoFile, Serialization.ToJson(manifest));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, $"Failed to get LiveVersionIds manifest");
             }
         }
 

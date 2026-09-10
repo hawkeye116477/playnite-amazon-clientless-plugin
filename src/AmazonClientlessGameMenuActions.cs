@@ -14,8 +14,29 @@ public static class AmazonClientlessGameMenuActions
     private static readonly ILogger Logger = LogManager.GetLogger(typeof(AmazonClientlessGameMenuActions));
     private static IPlayniteApi PlayniteApi { get; set; } = AmazonClientlessPlugin.PlayniteApi;
 
-    public static async Task OpenCheckForGamesUpdatesWindow()
+    public static async Task OpenCheckForGamesUpdatesWindow(Game game)
     {
+        var pluginUpdateController = new AmazonClientlessUpdateController();
+        var gamesToUpdate = new Dictionary<string, UpdateInfo>();
+        var updateCheckProgressOptions =
+            new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonCheckingForUpdates), false)
+                { IsIndeterminate = true };
+        await PlayniteApi.Dialogs.ShowAsyncBlockingProgressAsync(updateCheckProgressOptions,
+            async a => { gamesToUpdate = await pluginUpdateController.CheckGameUpdates(game.LibraryGameId!, game.Name); });
+        
+
+        var window = PlayniteApi.CreateWindow(new WindowCreationOptions
+        {
+            ShowMaximizeButton = false
+        });
+        window.DataContext = gamesToUpdate;
+        window.Title = $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExtensionsUpdates)}";
+        window.Content = new AmazonClientlessUpdaterView();
+        window.Owner = PlayniteApi.GetLastActiveWindow();
+        window.SizeToContent = SizeToContent.WidthAndHeight;
+        window.MinWidth = 600;
+        window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        window.ShowDialog();
     }
 
     public static async Task OpenMoveGameWindow(Game game)
