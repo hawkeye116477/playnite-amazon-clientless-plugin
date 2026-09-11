@@ -164,8 +164,12 @@ public static class ProcessStarter
             }
         }
 
-        var tokens = (command.Arguments ?? "").Split(' ').ToList();
-        if (tokens.Count == 0)
+        List<string> tokens;
+        if (command.Arguments.Length > 0)
+        {
+            tokens = [.. command.Arguments.Split(' ')];
+        }
+        else
         {
             tokens = [.. command.ArgumentList];
         }
@@ -183,7 +187,7 @@ public static class ProcessStarter
 
         var safeArguments = string.Join(" ", tokens);
 
-        var debugLog = $"Executing command: {allEnvironmentVariables}{command.FileName} {safeArguments} .";
+        var debugLog = $"Executing command: {allEnvironmentVariables}{command.FileName} {safeArguments} ...";
         if (!command.WorkingDirectory.IsNullOrEmpty())
         {
             debugLog += $"\nWorking directory: {command.WorkingDirectory}) .";
