@@ -106,7 +106,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
             return;
         }
 
-        var repairSkipPath = Path.Combine(matchingPluginTask.FullInstallPath, ".ACS_Temp");
+        var repairSkipPath = Path.Combine(matchingPluginTask.FullInstallPath, ".AGC_Temp");
         Directory.CreateDirectory(repairSkipPath);
         string repairSkipFile = Path.Combine(repairSkipPath, "repair-skip");
 
