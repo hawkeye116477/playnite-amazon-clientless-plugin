@@ -1,9 +1,10 @@
 ﻿id = "hawkeye116477.AmazonClientless"
-name = "Amazon Games Clientless Library Integration"
+name = "Amazon Games Clientless library integration"
 author = "hawkeye116477"
 version = "_version_"
 module = "AmazonClientless.dll"
-
+icon = "Resources\\icon.png"
+library_icon = "Resources\\icon.png"
 # Troubleshooting link to be shown on addons view
 #help_link = ""
 
