@@ -8,6 +8,6 @@ This project is distributed under the terms of the [GPLv3 license](/LICENSE) and
 This project is based on research from following projects:
 * https://github.com/JosefNemec/PlayniteExtensions/tree/master/source/Libraries/AmazonGamesLibrary
 * https://github.com/utkarshdalal/GameNative/blob/master/docs/AMAZON_API_SPEC.json
-* https://github.com/imLinguin/nile.
+* https://github.com/imLinguin/nile
 
 Thanks for all creators.
