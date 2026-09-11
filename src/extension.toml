@@ -5,11 +5,9 @@ version = "_version_"
 module = "AmazonClientless.dll"
 icon = "Resources\\icon.png"
 library_icon = "Resources\\icon.png"
-# Troubleshooting link to be shown on addons view
-#help_link = ""
 
-# Source code link to be shown on addons view
-#source_link = ""
+help_link = "https://github.com/hawkeye116477/playnite-amazon-clientless-plugin/wiki"
+source_link = "https://github.com/hawkeye116477/playnite-amazon-clientless-plugin"
 
 [[dependencies]]
 addon_id = "hawkeye116477.UDM"
