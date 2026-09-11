@@ -14,11 +14,14 @@ public class AmazonClientlessMetadataProviderProviderGameSession(Game game) : Me
             var installedAppList = AmazonClientlessGames.GetAllInstalledGames();
             if (Game.LibraryGameId != null && installedAppList.TryGetValue(Game.LibraryGameId, out var value))
             {
-                var gameConfig = AmazonClientlessGames.GetGameConfiguration(game.InstallDirectory!);
-                var exePath = Path.Combine(value.Path, gameConfig.Main.Command);
-                if (File.Exists(exePath))
+                var gameConfig = AmazonClientlessGames.GetGameConfiguration(Game.InstallDirectory!);
+                if (gameConfig?.Main?.Command != null)
                 {
-                    return new ImportableFile(BuiltInGameDataId.DesktopIcon, exePath);
+                    var exePath = Path.Combine(value.Path, gameConfig.Main.Command);
+                    if (File.Exists(exePath))
+                    {
+                        return new ImportableFile(BuiltInGameDataId.DesktopIcon, exePath);
+                    }
                 }
             }
         }
@@ -27,8 +30,8 @@ public class AmazonClientlessMetadataProviderProviderGameSession(Game game) : Me
     
     public override async Task<object?> GetDataAsync(GetDataArgs dataArgs)
     {
-        var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
-        var entitlement = await clientApi.GetEntitlement(Game.LibraryGameId);
+        var clientApi = new AmazonAccountClient();
+        var entitlement = await clientApi.GetEntitlement(Game.LibraryGameId!);
         var details = entitlement?.Product.ProductDetail;
         
         return dataArgs.DataId switch

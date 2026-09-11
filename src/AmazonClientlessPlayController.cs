@@ -125,7 +125,7 @@ public class AmazonClientlessPlayController(Game game) : PlayController(game.Lib
 
             if (!canLaunchOffline)
             {
-                var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
+                var clientApi = new AmazonAccountClient();
                 var userLoggedIn = await clientApi.GetIsUserLoggedIn();
                 if (!userLoggedIn)
                 {

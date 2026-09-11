@@ -87,7 +87,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
 
         // Stop continuing if no links or files
         bool stopContinue = false;
-        var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
+        var clientApi = new AmazonAccountClient();
 
         var manifest = await clientApi.GetGameManifest(downloadTask.GameId, downloadTask.Name);
         var originalManifestJson = Serialization.ToJson(manifest);

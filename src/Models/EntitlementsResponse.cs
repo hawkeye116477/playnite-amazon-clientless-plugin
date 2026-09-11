@@ -11,7 +11,7 @@ public class Entitlement
                 public string? BackgroundUrl1;
                 public string? BackgroundUrl2;
                 public string? Developer;
-                public List<string> OtherDevelopers;
+                public List<string> OtherDevelopers = [];
                 public string? Publisher;
                 public DateTime? ReleaseDate;
                 public List<string> Genres = [];

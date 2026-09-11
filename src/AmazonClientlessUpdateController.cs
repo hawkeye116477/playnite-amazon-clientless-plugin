@@ -15,7 +15,7 @@ public class AmazonClientlessUpdateController
     public async Task<Dictionary<string, UpdateInfo>> CheckGameUpdates(string gameId, string gameTitle)
     {
         var gameToUpdate = new Dictionary<string, UpdateInfo>();
-        var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
+        var clientApi = new AmazonAccountClient();
         var gameManifest = await clientApi.GetGameManifest(gameId, gameTitle);
         var allInstalledGames = AmazonClientlessGames.GetAllInstalledGames();
         allInstalledGames.TryGetValue(gameId, out var installedInfo);
@@ -64,7 +64,7 @@ public class AmazonClientlessUpdateController
         var gamesToUpdate = new Dictionary<string, UpdateInfo>();
         var allInstalledGames = AmazonClientlessGames.GetAllInstalledGames();
         var gameIdsToCheck = allInstalledGames.Keys.ToList();
-        var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
+        var clientApi = new AmazonAccountClient();
         var newVersionIdsResponse = await clientApi.GetLiveVersionIds(gameIdsToCheck, forceRefreshCache);
 
         foreach (var (gameId, installedInfo) in allInstalledGames)

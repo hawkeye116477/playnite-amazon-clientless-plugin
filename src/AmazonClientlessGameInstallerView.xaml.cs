@@ -94,7 +94,7 @@ public partial class AmazonClientlessGameInstallerView : UserControl
             MultiInstallData.Add(sdkInstallTask);
         }
 
-        var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
+        var clientApi = new AmazonAccountClient();
         foreach (var installData in MultiInstallData.ToList())
         {
             var manifest = await clientApi.GetGameManifest(installData.GameId, installData.Name);
@@ -179,7 +179,7 @@ public partial class AmazonClientlessGameInstallerView : UserControl
 
     private async Task StartTask(DownloadAction downloadAction, bool silently = false)
     {
-        var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
+        var clientApi = new AmazonAccountClient();
         var userLoggedIn = await clientApi.GetIsUserLoggedIn();
         if (!userLoggedIn)
         {

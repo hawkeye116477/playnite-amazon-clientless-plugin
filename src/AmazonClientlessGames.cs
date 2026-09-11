@@ -193,7 +193,7 @@ public class AmazonClientlessGames
     public static async Task<List<ImportableGame>> GetLibraryGames()
     {
         var games = new List<ImportableGame>();
-        var client = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
+        var client = new AmazonAccountClient();
         var entitlements = await client.GetAccountEntitlements();
 
         foreach (var item in entitlements)
@@ -218,7 +218,7 @@ public class AmazonClientlessGames
 
     public static async Task<double> CalculateGameSize(string gameId, string gameTitle, bool forceRefreshCache = false)
     {
-        var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
+        var clientApi = new AmazonAccountClient();
         var manifest = await clientApi.GetGameManifest(gameId, gameTitle, forceRefreshCache);
         double downloadSizeNumber = 0;
         foreach (var file in manifest.AllFiles)

@@ -16,8 +16,9 @@ using File = System.IO.File;
 
 namespace AmazonClientless.Services;
 
-public class AmazonAccountClient(IPlayniteApi api)
+public class AmazonAccountClient
 {
+    private IPlayniteApi playniteApi = AmazonClientlessPlugin.PlayniteApi;
     private readonly ILogger logger = LogManager.GetLogger<AmazonAccountClient>();
 
     private const string LoginUrl =
@@ -37,7 +38,7 @@ public class AmazonAccountClient(IPlayniteApi api)
 
     public async Task LogOut()
     {
-        using var webView = api.WebView.CreateView(new WebViewSettings
+        using var webView = playniteApi.WebView.CreateView(new WebViewSettings
         {
             WindowWidth = 580,
             WindowHeight = 700,
@@ -52,7 +53,7 @@ public class AmazonAccountClient(IPlayniteApi api)
         var codeChallenge = GenerateCodeChallenge();
         var deviceSerial = GetMachineGuid().ToString("N");
         var clientId = Convert.ToHexString(Encoding.ASCII.GetBytes($"{deviceSerial}#A2UMVHOX7UP4V7")).ToLowerInvariant();
-        using var webView = api.WebView.CreateView(new WebViewSettings
+        using var webView = playniteApi.WebView.CreateView(new WebViewSettings
         {
             WindowWidth = 490,
             WindowHeight = 660,

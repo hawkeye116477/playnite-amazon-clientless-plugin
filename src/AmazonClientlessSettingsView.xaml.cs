@@ -30,7 +30,7 @@ namespace AmazonClientless
             {
                 LoginBtn.IsEnabled = false;
                 AuthStatusTB.Text = LocalizationManager.Instance.GetString(LOC.ThirdPartyAmazonLoginChecking);
-                var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
+                var clientApi = new AmazonAccountClient();
                 var userLoggedIn = await clientApi.GetIsUserLoggedIn();
                 if (userLoggedIn)
                 {
@@ -63,7 +63,7 @@ namespace AmazonClientless
         private async void LoginBtn_Click(object sender, RoutedEventArgs e)
         {
             var userLoggedIn = LoginBtn.IsChecked;
-            var clientApi = new AmazonAccountClient(AmazonClientlessPlugin.PlayniteApi);
+            var clientApi = new AmazonAccountClient();
             if (!userLoggedIn == false)
             {
                 try
