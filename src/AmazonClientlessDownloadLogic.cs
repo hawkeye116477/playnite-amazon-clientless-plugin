@@ -542,7 +542,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                             await RentAndUsePool(bufferSize, async buffer =>
                                 {
                                     await using var finalFileFs = new FileStream(filePath, fileMode, FileAccess.Write,
-                                        FileShare.None, bufferSize,
+                                        FileShare.None, 4096,
                                         FileOptions.Asynchronous | FileOptions.SequentialScan);
                                     int bytesRead;
                                     while ((bytesRead = await networkStream.ReadAsync(buffer, ct)
