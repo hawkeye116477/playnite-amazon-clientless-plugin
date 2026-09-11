@@ -70,19 +70,10 @@ version = get_extension_version.run()
 versionUnderline = version.replace(".", "_")
 extFile = pj(mainPath, "Releases", "AmazonClientless_" +
              versionUnderline + ".pext2")
-extFile2 = pj(mainPath, "Releases", "AmazonClientless_" +
-             versionUnderline + ".zip")
 subprocess.run([toolbox, "pack",
                compiledPath, extFile], check=True)
 checksumFilePath = pj(mainPath, "Releases",
                       "AmazonClientless_" + versionUnderline + ".pext.sha256")
-
-SKIP_DLLS = ["ByteAether.Ulid.dll", "CommunityToolkit.Mvvm.dll", "Playnite.SDK.dll"]
-with zipfile.ZipFile(extFile2, 'w', compression=zipfile.ZIP_DEFLATED) as zf:
-    for root, dirs, files in os.walk(compiledPath):
-        for filename in files:
-            if filename not in SKIP_DLLS:
-                zf.write(os.path.join(root, filename), arcname=os.path.relpath(os.path.join(root, filename), compiledPath))
 
 if os.path.exists(extFile):
     with open(extFile, 'rb') as fileToCheck:
@@ -131,4 +122,4 @@ if os.path.exists(extFile):
 
     git_repo = git.Repo(mainPath)
     version = version.replace(".2026", "-2026")
-    git_repo.create_tag(f"P11_{version}")
+    git_repo.create_tag(f"{version}")
