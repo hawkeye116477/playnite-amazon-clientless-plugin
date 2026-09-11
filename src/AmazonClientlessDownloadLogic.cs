@@ -542,7 +542,7 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
                             await RentAndUsePool(bufferSize, async buffer =>
                                 {
                                     await using var finalFileFs = new FileStream(filePath, fileMode, FileAccess.Write,
-                                        FileShare.ReadWrite | FileShare.Delete, bufferSize,
+                                        FileShare.None, bufferSize,
                                         FileOptions.Asynchronous | FileOptions.SequentialScan);
                                     int bytesRead;
                                     while ((bytesRead = await networkStream.ReadAsync(buffer, ct)
@@ -671,35 +671,38 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
         const int maxRetries = 5;
         int delayMs = 500;
         var matchingPluginTask = AmazonClientlessPlugin.Instance.PluginDownloadData.Downloads.FirstOrDefault(t => t.GameId == gameId);
-        for (int i = 0; i < maxRetries; i++)
+        await Task.Run(async () =>
         {
-            try
+            for (int i = 0; i < maxRetries; i++)
             {
-                if (matchingPluginTask is { DownloadProperties.DownloadAction: DownloadAction.Install })
+                try
                 {
-                    if (Directory.Exists(downloadTask.FullInstallPath))
+                    if (matchingPluginTask is { DownloadProperties.DownloadAction: DownloadAction.Install })
                     {
-                        Directory.Delete(downloadTask.FullInstallPath, true);
+                        if (Directory.Exists(downloadTask.FullInstallPath))
+                        {
+                            Directory.Delete(downloadTask.FullInstallPath, true);
+                        }
                     }
-                }
 
-                break;
-            }
-            catch (Exception rex)
-            {
-                if (i < maxRetries - 1)
-                {
-                    await Task.Delay(delayMs);
-                    delayMs *= 2;
-                }
-                else
-                {
-                    var itemToRemove = downloadTask.FullInstallPath;
-                    Logger.Warn(rex, $"Can't remove {itemToRemove}. Please try removing manually.");
                     break;
                 }
+                catch (Exception rex)
+                {
+                    if (i < maxRetries - 1)
+                    {
+                        await Task.Delay(delayMs);
+                        delayMs *= 2;
+                    }
+                    else
+                    {
+                        var itemToRemove = downloadTask.FullInstallPath;
+                        Logger.Warn(rex, $"Can't remove {itemToRemove}. Please try removing manually.");
+                        break;
+                    }
+                }
             }
-        }
+        });
     }
 
     public async Task OnRemoveDownloadEntry(UnifiedDownload downloadTask)
