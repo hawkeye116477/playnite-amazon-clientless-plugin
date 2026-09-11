@@ -11,11 +11,16 @@ public class Entitlement
                 public string? BackgroundUrl1;
                 public string? BackgroundUrl2;
                 public string? Developer;
+                public List<string> OtherDevelopers;
                 public string? Publisher;
                 public DateTime? ReleaseDate;
                 public List<string> Genres = [];
                 public List<string> GameModes = [];
                 public List<string> Keywords = [];
+                public string? PegiRating;
+                public string? EsrbRating;
+                public string? PgCrownImageUrl;
+                public string? LogoUrl;
                 public List<string> Screenshots = [];
                 public List<string> Videos = [];
             }
@@ -26,6 +31,7 @@ public class Entitlement
 
         public string? Asin;
         public int AsinVersion;
+        public string Description = "";
         public string ID = "";
         public ProductDetailWrapper ProductDetail = new();
         public string? ProductLine;
@@ -37,6 +43,7 @@ public class Entitlement
 
     public string? ChannelId;
     public string ID = "";
+
     public ProductWrapper Product = new();
     public string? State;
 
