@@ -80,12 +80,13 @@ public class AmazonClientlessUninstallController(Game game) : UninstallControlle
             new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.CommonRemoveGameLaunchSettings), false);
 
         var playniteApi = AmazonClientlessPlugin.PlayniteApi;
+        
         var result = await playniteApi.Dialogs.ShowMessageAsync(
             LocalizationManager.Instance.GetString(LOC.CommonUninstallGameConfirm,
                 new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)gamesCombined }),
             LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstallGame),
             MessageBoxSeverity.Question, responses, [removeGameLaunchSettingsCheckbox]);
-        if (result?.Title == LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteYesLabel))
+        if (result == responses[0])
         {
             var notUninstalledGames = new List<Game>();
             var uninstalledGames = new List<Game>();
