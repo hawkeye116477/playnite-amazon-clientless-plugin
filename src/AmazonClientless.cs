@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.IO.Compression;
 using System.Windows;
 using AmazonClientless.Enums;
 using AmazonClientless.Models;
@@ -77,10 +78,55 @@ public class AmazonClientlessPlugin : Plugin
 
     public override async Task<CollectDiagnosticDataArgsAsyncResult?> CollectDiagnosticDataArgsAsync(CollectDiagnosticDataArgs args)
     {
-        // Implement this method if you want to gather custom data when user generates diagnostics data for your plugin.
-        // This can be run manually by user from addons view or on crash dialog that detected your plugin to be the source of the crash.
-        // If the method is missing, Playnite collects extension log.
-        return null;
+        var logsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Temp",
+            "Playnite", Id, "Logs");
+        try
+        {
+            if (Directory.Exists(logsPath))
+            {
+                Directory.Delete(logsPath, true);
+            }
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
+
+        Directory.CreateDirectory(logsPath);
+        var zipPath = Path.Combine(logsPath, $"{Id}.zip");
+        try
+        {
+            Directory.CreateDirectory(logsPath);
+            await File.WriteAllTextAsync(Path.Combine(logsPath, "Readme.txt"),
+                $"To report a bug, please fill form at: \n" +
+                $"<https://github.com/hawkeye116477/playnite-amazon-clientless-plugin/issues/new?template=bugs.yml&pluginV={AmazonClientlessTroubleshootingInformation.PluginVersion}&playniteV={AmazonClientlessTroubleshootingInformation.PlayniteVersion}> \n" +
+                $"and attach generated zip file.");
+
+            var pluginLogFiles = Directory.GetFiles(PlayniteApi.UserDataDir, "plugin*.log", SearchOption.TopDirectoryOnly);
+            var playniteLogFiles = Directory.GetFiles(PlayniteApi.AppInfo.ConfigurationDirectory, "playnite*.log",
+                SearchOption.TopDirectoryOnly);
+            var files = new List<string>();
+            files.AddRange(pluginLogFiles);
+            files.AddRange(playniteLogFiles);
+
+            await using var zipArchive = await ZipFile.OpenAsync(zipPath, ZipArchiveMode.Update);
+            foreach (var singleFile in files)
+            {
+                await using var source = new FileStream(singleFile, FileMode.Open, FileAccess.Read,
+                    FileShare.ReadWrite | FileShare.Delete);
+                await source.CopyToAsync(await zipArchive.CreateEntry(Path.GetFileName(singleFile)).OpenAsync());
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Debug(ex);
+        }
+
+        var newResults = new CollectDiagnosticDataArgsAsyncResult
+        {
+            ResultFile = zipPath
+        };
+        return newResults;
     }
 
 
