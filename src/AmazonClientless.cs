@@ -91,8 +91,8 @@ public class AmazonClientlessPlugin : Plugin
             new MenuItemDescriptor($"gameMenu.{Id}", ShortPluginName),
         ];
     }
-    
-    public override ICollection<MenuItemImpl>? GetGameMenuItems(GetGameMenuItemsArgs args)
+
+    public override ICollection<MenuItemImpl> GetGameMenuItems(GetGameMenuItemsArgs args)
     {
         var menuItems = new List<MenuItemImpl>();
         if (args.ItemId != $"gameMenu.{Id}")
@@ -206,12 +206,47 @@ public class AmazonClientlessPlugin : Plugin
                 },
                 icon: CommonIcons.UpdateIcon
             ));
+            childMenuItems.Add(new MenuItemImpl(LocalizationManager.Instance.GetString(LOC.CommonFinishInstallation),
+                async _ =>
+                {
+                    var installedAppList = AmazonClientlessGames.GetAllInstalledGames();
+                    var gamesToCompleteInstall = installedAppList
+                                                .Where(g => !AmazonClientlessGameSettingsViewModel.LoadGameSettings(g.Key).IsFullyInstalled)
+                                                .ToList();
+                    if (gamesToCompleteInstall.Count != 0)
+                    {
+                        var installProgressOptions =
+                            new GlobalProgressOptions(
+                                    LocalizationManager.Instance.GetString(LOC.CommonFinishingInstallation), false)
+                                { IsIndeterminate = false };
+
+                        await PlayniteApi.Dialogs.ShowAsyncBlockingProgressAsync(installProgressOptions, async Task (progress) =>
+                            {
+                                progress.SetProgressMaxValue(gamesToCompleteInstall.Count);
+                                var current = 0;
+                                foreach (var game in gamesToCompleteInstall)
+                                {
+                                    progress.SetText(
+                                        $"{LocalizationManager.Instance.GetString(LOC.CommonFinishingInstallation)} ({game.Value.Name})");
+                                    await AmazonClientlessGames.CompleteGameInstallation(game.Key, game.Value.Path);
+                                    current++;
+                                    progress.SetCurrentProgressValue(current);
+                                }
+                            }
+                        );
+                    }
+                    else
+                    {
+                        await PlayniteApi.Dialogs.ShowMessageAsync(
+                            LocalizationManager.Instance.GetString(LOC.CommonNoFinishNeeded));
+                    }
+                }, icon: CommonIcons.FinishInstallationIcon));
             menuItems.Add(new MenuItemImpl(ShortPluginName, childMenuItems));
         }
 
         return menuItems;
     }
-    
+
     public override async Task<GameEditSessionHandler?> GetGameEditHandlerAsync(GetGameEditHandlerArgs args)
     {
         if (args.Games is [{ LibraryId: Id }])
@@ -221,12 +256,12 @@ public class AmazonClientlessPlugin : Plugin
 
         return null;
     }
-    
+
     public override async Task<PluginSettingsHandler?> GetSettingsHandlerAsync(GetSettingsHandlerArgs args)
     {
         return new AmazonClientlessSettingsHandler(this);
     }
-    
+
     public override async Task<List<ImportableGame>> GetGamesAsync(LibraryGetGamesArgs args)
     {
         var allGames = new List<ImportableGame>();
@@ -295,7 +330,7 @@ public class AmazonClientlessPlugin : Plugin
 
         return allGames;
     }
-    
+
     public override async Task<List<PlayController>> GetPlayActionsAsync(GetPlayActionsArgs args)
     {
         if (args.Game.LibraryId != Id)
@@ -325,7 +360,7 @@ public class AmazonClientlessPlugin : Plugin
 
         return [new AmazonClientlessUninstallController(args.Game)];
     }
-    
+
     public override async Task<MetadataProvider?> GetMetadataProviderAsync(GetMetadataProviderArgs args)
     {
         return new AmazonClientlessMetadataProvider();
@@ -352,7 +387,7 @@ public class AmazonClientlessPlugin : Plugin
         var settingsFile = Path.Combine(PlayniteApi.UserDataDir, "settings.json");
         FileSystem.WriteStringToFile(settingsFile, Serialization.ToJson(settings, true));
     }
-    
+
 
     public static long GetNextUpdateCheckTime(UpdatePolicy frequency)
     {
