@@ -2,7 +2,7 @@
 Fully clientless Amazon Games library integration for Playnite 11+.
 
 ## **License**
-This project is distributed under the terms of the [GPLv3 license](/LICENSE) and uses third-party libraries that are distributed under their own terms (see [ThirdPartyLicenses.txt](/ThirdPartyLicenses.txt)).
+This project is distributed under the terms of the [GPLv3 license](LICENSE.md) and uses third-party libraries that are distributed under their own terms (see [ThirdPartyLicenses.txt](ThirdPartyLicenses.txt)).
 
 ## **Credits**
 This project is based on research from following projects:
