@@ -69,7 +69,8 @@
             </StackPanel>
             <Separator Margin="0,5,0,0" />
             <ListBox BorderThickness="0" Name="UpdatesLB" SelectionMode="Multiple" Margin="0,5" Focusable="False"
-                     IsTabStop="False" SelectionChanged="UpdatesLB_OnSelectionChanged">
+                     IsTabStop="False" KeyboardNavigation.TabNavigation="Continue" KeyboardNavigation.DirectionalNavigation="Contained"
+                     Grid.IsSharedSizeScope="True" SelectionChanged="UpdatesLB_OnSelectionChanged">
                 <ListBox.Resources>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Template">
