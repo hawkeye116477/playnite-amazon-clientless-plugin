@@ -40,10 +40,16 @@ public class AmazonAccountClient
     {
         using var webView = playniteApi.WebView.CreateView(new WebViewSettings
         {
-            WindowWidth = 580,
-            WindowHeight = 700,
+            WindowWidth = 490,
+            WindowHeight = 660,
+            UserAgent = LoginUserAgent,
         });
-        await webView.DeleteDomainCookiesAsync(".amazon.com");
+        webView.WebViewInitializedCallbackAsync = async _ =>
+        {
+            await webView.DeleteDomainCookiesAsync(".amazon.com");
+            webView.Close();
+        };
+        await webView.OpenDialogAsync();
         FileSystem.DeleteFile(EncryptedTokensPath);
     }
 
