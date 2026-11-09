@@ -118,7 +118,6 @@ public class AmazonClientlessDownloadLogic : IUnifiedDownloadLogic
             var reporterCts = CancellationTokenSource.CreateLinkedTokenSource(linkedCts.Token);
             var allFiles = Directory.EnumerateFiles(matchingPluginTask.FullInstallPath, "*.*", SearchOption.AllDirectories).ToList();
             int countFiles = allFiles.Count;
-            Logger.Debug(countFiles);
             if (countFiles > 0)
             {
                 var itemsMap = manifest.AllFiles.Where(i => !string.IsNullOrEmpty(i.Path) && i.Size is > 0)
