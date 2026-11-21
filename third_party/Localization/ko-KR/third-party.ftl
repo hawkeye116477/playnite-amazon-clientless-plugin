@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
-### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/cb2ad68117d2942b94d9004b68bbadb264e96e90 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/cb2ad68117d2942b94d9004b68bbadb264e96e90. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-start-error = 게임을 시작할 수 없습니다: { $var0 }

@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
-### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/cb2ad68117d2942b94d9004b68bbadb264e96e90 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/cb2ad68117d2942b94d9004b68bbadb264e96e90. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-start-error = Δεν είναι δυνατή η έναρξη του παιχνιδιού: { $var0 }
@@ -45,12 +45,12 @@ third-party-playnite-open = Άνοιγμα
 third-party-amazon-settings-import-installed-label = Εισαγωγή εγκατεστημένων παιχνιδιών
 third-party-amazon-settings-import-uninstalled-label = Εισαγωγή μη εγκατεστημένων παιχνιδιών
 third-party-amazon-settings-connect-account = Σύνδεση λογαριασμού
-third-party-amazon-login-checking = Έλεγχος κατάστασης πιστοποίησης...
-third-party-amazon-logged-in = Ο χρήστης είναι πιστοποιημένος
-third-party-amazon-not-logged-in = Απαιτείται πιστοποίηση
-third-party-amazon-not-logged-in-error = Αδυναμία πιστοποίησης του χρήστη
-third-party-amazon-authenticate-label = Πιστοποίηση
-third-party-amazon-settings-start-game-directly = Απευθείας εκκίνηση των παιχνιδιών χωρίς τη χρήση της επίσημης εφαρμογής
+third-party-amazon-login-checking = Έλεγχος κατάστασης ταυτοποίησης…
+third-party-amazon-logged-in = Ο χρήστης είναι ταυτοποιημένος
+third-party-amazon-not-logged-in = Απαιτείται ταυτοποίηση
+third-party-amazon-not-logged-in-error = Αδυναμία ταυτοποίησης του χρήστη
+third-party-amazon-authenticate-label = Ταυτοποίηση
+third-party-amazon-settings-start-game-directly = Εκκίνηση των παιχνιδιών απευθείας χωρίς τον επίσημο client
 third-party-amazon-trouble-shooting-account-link = Αντιμετώπιση προβλημάτων συγχρονισμού του λογαριασμού
 third-party-amazon-trouble-shooting-issues = Αντιμετώπιση προβλημάτων
 third-party-amazon-settings-import-library-label = Εισαγωγή όλων των παιχνιδιών

@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
-### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/cb2ad68117d2942b94d9004b68bbadb264e96e90 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/cb2ad68117d2942b94d9004b68bbadb264e96e90. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-start-error = Não foi possível iniciar o jogo: { $var0 }
@@ -44,6 +44,7 @@ third-party-playnite-option-once-a-week = Uma vez por semana
 third-party-playnite-open = Abrir
 third-party-amazon-settings-import-installed-label = Importar jogos instalados
 third-party-amazon-settings-import-uninstalled-label = Importar jogos não instalados
+third-party-amazon-settings-connect-account = Conectar conta
 third-party-amazon-login-checking = A verificar estado da autenticação...
 third-party-amazon-logged-in = O utilizador já está autenticado
 third-party-amazon-not-logged-in = Requer autenticação
@@ -56,3 +57,4 @@ third-party-amazon-settings-import-library-label = Importar todos os jogos
 third-party-amazon-private-account = Conta Privada
 third-party-amazon-public-account = Conta Pública
 third-party-amazon-api-key = Chave de API
+third-party-amazon-start-using-client = Comece a usar o { $var0 } cliente

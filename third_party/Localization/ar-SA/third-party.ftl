@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
-### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/cb2ad68117d2942b94d9004b68bbadb264e96e90 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/cb2ad68117d2942b94d9004b68bbadb264e96e90. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-start-error = تعذّر بدأ اللعبة:{ $var0 }
@@ -48,13 +48,13 @@ third-party-amazon-settings-connect-account = ربط الحساب
 third-party-amazon-login-checking = جاري التحقق من حالة المصادقة…
 third-party-amazon-logged-in = تم مصادقة المستخدم
 third-party-amazon-not-logged-in = يتطلب المصادقة
-third-party-amazon-not-logged-in-error = فشل في مصادقة المستخدم.
+third-party-amazon-not-logged-in-error = أخفقت مصادقة المستخدم
 third-party-amazon-authenticate-label = مصادقة
-third-party-amazon-settings-start-game-directly = بدء تشغيل الألعاب مباشرة دون تشغيل المنصة الرسمية
-third-party-amazon-trouble-shooting-account-link = استكشاف مشاكل مزامنة الحساب وإصلاحها
-third-party-amazon-trouble-shooting-issues = استكشاف الأخطاء وإصلاحها
+third-party-amazon-settings-start-game-directly = تشغيل الألعاب مباشرة دون تشغيل المنصة الرسمية
+third-party-amazon-trouble-shooting-account-link = جاري استكشاف مشاكل مزامنة الحساب وإصلاحها
+third-party-amazon-trouble-shooting-issues = جاري استكشاف الأخطاء وإصلاحها
 third-party-amazon-settings-import-library-label = استيراد جميع الألعاب
 third-party-amazon-private-account = حساب خاص
 third-party-amazon-public-account = حساب عام
 third-party-amazon-api-key = مفتاح API
-third-party-amazon-start-using-client = بدء باستخدام { $var0 } عميل
+third-party-amazon-start-using-client = بدء استخدام عميل { $var0 }

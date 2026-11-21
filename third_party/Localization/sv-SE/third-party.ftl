@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
-### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/cb2ad68117d2942b94d9004b68bbadb264e96e90 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/cb2ad68117d2942b94d9004b68bbadb264e96e90. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-start-error = Kan inte starta spelet: { $var0 }
@@ -38,3 +38,23 @@ third-party-playnite-dont-show-again-title = Visa Inte Igen
 third-party-playnite-extensions-updates = Uppdateringar
 third-party-playnite-select-file-tooltip = Välj fil…
 third-party-playnite-select-directory-tooltip = Välj mapp…
+third-party-playnite-option-only-manually = Endast manuellt
+third-party-playnite-option-once-a-day = En gång om dagen
+third-party-playnite-option-once-a-week = En gång i veckan
+third-party-playnite-open = Öppna
+third-party-amazon-settings-import-installed-label = Importera installerade spel
+third-party-amazon-settings-import-uninstalled-label = Importera ej installerade spel
+third-party-amazon-settings-connect-account = Anslut konto
+third-party-amazon-login-checking = Kontrollerar autentiseringsstatus…
+third-party-amazon-logged-in = Användaren är autentiserad
+third-party-amazon-not-logged-in = Kräver autentisering
+third-party-amazon-not-logged-in-error = Det gick inte att autentisera användaren.
+third-party-amazon-authenticate-label = Autentisera
+third-party-amazon-settings-start-game-directly = Starta spel direkt utan att köra officiell klient
+third-party-amazon-trouble-shooting-account-link = Felsökning gällande synkronisering av konto
+third-party-amazon-trouble-shooting-issues = Felsökning av problem
+third-party-amazon-settings-import-library-label = Importera alla spel
+third-party-amazon-private-account = Privat konto
+third-party-amazon-public-account = Offentligt konto
+third-party-amazon-api-key = API Nyckel
+third-party-amazon-start-using-client = Börja använda { $var0 } klient

@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
-### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/cb2ad68117d2942b94d9004b68bbadb264e96e90 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/cb2ad68117d2942b94d9004b68bbadb264e96e90. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-start-error = No se puede iniciar el juego: { $var0 }
@@ -28,8 +28,8 @@ third-party-playnite-metadata-download-error = Error al descargar los metadatos:
 third-party-playnite-uninstalling = Desinstalando
 third-party-playnite-game-launching = Iniciando
 third-party-playnite-do-nothing = No hacer nada
-third-party-playnite-updater-window-title = Actualización Disponible
-third-party-playnite-updater-install-update = Instalar Actualización
+third-party-playnite-updater-window-title = Actualización disponible
+third-party-playnite-updater-install-update = Descargar e instalar actualización
 third-party-playnite-check-for-updates = Comprobar actualizaciones
 third-party-playnite-update-check-fail-message = Error al comprobar actualizaciones.
 third-party-playnite-install-game = Instalar
@@ -54,7 +54,7 @@ third-party-amazon-settings-start-game-directly = Iniciar juegos directamente si
 third-party-amazon-trouble-shooting-account-link = Resolución de problemas de sincronización de cuentas
 third-party-amazon-trouble-shooting-issues = Resolución de problemas
 third-party-amazon-settings-import-library-label = Importar todos los juegos
-third-party-amazon-private-account = Cuenta Privada
-third-party-amazon-public-account = Cuenta Pública
+third-party-amazon-private-account = Cuenta privada
+third-party-amazon-public-account = Cuenta pública
 third-party-amazon-api-key = Clave de API
 third-party-amazon-start-using-client = Iniciar usando el cliente { $var0 }

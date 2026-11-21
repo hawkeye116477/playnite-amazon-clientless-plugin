@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1 and 
-### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/b1c22baa59c1c86f2219109d9a9316b626fc8db1. 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/cb2ad68117d2942b94d9004b68bbadb264e96e90 and 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/tree/cb2ad68117d2942b94d9004b68bbadb264e96e90. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-start-error = Nu poate fi pornită camera: { $var0 }
@@ -35,6 +35,10 @@ third-party-playnite-update-check-fail-message = Nu s-a putut căuta versiunea n
 third-party-playnite-install-game = Instalaţi
 third-party-playnite-uninstall-game = Dezinstalați
 third-party-playnite-dont-show-again-title = Nu mai afișa
+third-party-playnite-option-only-manually = Doar manual
+third-party-playnite-option-once-a-day = Zilnic
+third-party-playnite-option-once-a-week = Săptămânal
+third-party-playnite-open = Deschideți
 third-party-amazon-settings-import-installed-label = Importați jocurile instalate
 third-party-amazon-settings-import-uninstalled-label = Importanți jocurile neinstalate
 third-party-amazon-settings-connect-account = Conectare cont
